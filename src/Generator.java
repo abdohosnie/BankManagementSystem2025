@@ -42,4 +42,13 @@ public class Generator {
         // Return the digit needed to make the total divisible by 10
         return (10 - (sum % 10)) % 10;
     }
+
+    public class AccountNumberGenerator {
+        private static final Random random = new Random();
+
+        public static int generateAccountNumber() {
+            return 10000000 + random.nextInt(90000000); // Generates an 8-digit number
+        }
+    }
+
 }

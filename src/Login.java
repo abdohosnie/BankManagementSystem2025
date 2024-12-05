@@ -5,7 +5,7 @@ public class Login {
     public Login() {
     }
 
-    public static int login(Scanner scanner, ArrayList<Client> clients, ArrayList<Employee> emps) {
+    public static int login(Scanner scanner, ArrayList<Client> clients, ArrayList<Employee> employees) {
         System.out.println("Username or ID: ");
         String username = scanner.nextLine();
         System.out.println("Password: ");
@@ -17,13 +17,13 @@ public class Login {
                 return 0;
             } else {
                 if (i / 100000 == 1) {
-                    for(Client client : clients) {
+                    for (Client client : clients) {
                         if (i == client.getId() && s.equals(client.getPassword())) {
                             return client.getId();
                         }
                     }
                 } else if (i / 100000 == 2) {
-                    for(Employee emp : emps) {
+                    for (Employee emp : employees) {
                         if (i == emp.getId() && s.equals(emp.getPassword())) {
                             return emp.getId();
                         }
@@ -36,13 +36,13 @@ public class Login {
             if (s.equals("admin") && username.equals("admin")) {
                 return 0;
             } else {
-                for(Employee emp : emps) {
+                for (Employee emp : employees) {
                     if (s.equals(emp.getPassword()) && username.equals(emp.getUsername())) {
                         return emp.getId();
                     }
                 }
 
-                for(Client client : clients) {
+                for (Client client : clients) {
                     if (s.equals(client.getPassword()) && username.equals(client.getUsername())) {
                         return client.getId();
                     }

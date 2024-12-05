@@ -2,14 +2,14 @@ public class Account {
     private int accountNumber;
     private final int clientId;
     private AccountType accountType;
-    private boolean accountState;
+    private AccountState accountState;
     private double balance;
     public static int nextNumber = 0;
 
-    public Account(int clientId ,boolean accountState, AccountType accountType, double balance) {
+    public Account(int clientId, AccountState accountState, AccountType accountType, double balance) {
         this.accountNumber = 300000 + nextNumber;
         this.clientId = clientId;
-        this.accountState = true;
+        this.accountState = accountState;
         this.accountType = accountType;
         this.balance = balance;
         nextNumber++;
@@ -27,12 +27,18 @@ public class Account {
         return clientId;
     }
 
-    public boolean isAccountState() {
+    public AccountState getAccountState() {
         return accountState;
     }
 
-    public void setAccountState(boolean accountState) {
-        this.accountState = accountState;
+    public void activateAccount(AccountState accountState) {
+        this.accountState = AccountState.ACTIVE;
+        System.out.println("Account activated successfully!");
+    }
+
+    public void deactivateAccount(AccountState accountState) {
+        this.accountState = AccountState.INACTIVE;
+        System.out.println("Account deactivated successfully!");
     }
 
     public AccountType getAccountType() {
@@ -65,7 +71,7 @@ public class Account {
         if (amount > 0) {
             if (balance >= amount) {
                 balance -= amount;
-                System.out.println("Withdrawn: $" + amount);
+                System.out.println("Withdrawn: " + amount + " LE.");
 
                 // Apply fees if Current Account drops below the minimum balance
                 if (accountType == AccountType.CURRENT && balance < AccountType.CURRENT.getMinBalance()) {
@@ -81,7 +87,7 @@ public class Account {
 
     private void applyFees() {
         double fees = 50.0F;
-        System.out.println("Balance below minimum threshold. Applying fee of $" + fees);
+        System.out.println("Balance below minimum threshold. Applying fee of " + fees + " LE.");
         balance -= fees;
 
         // this checks if the balance went negative after fees

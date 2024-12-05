@@ -69,7 +69,7 @@ public class Employee extends User {
         return str;
     }
 
-    public Employee(String firstName, String lastName, String username, String password, int phoneNumber, String address, String position, String graduatedCollege, int yearOfGraduation, String collegeGrade) {
+    public Employee(String firstName, String lastName, String username, String password, String phoneNumber, String address, String position, String graduatedCollege, int yearOfGraduation, String collegeGrade) {
         super(firstName, lastName, username, password, phoneNumber);
         this.setId(200000 + nextId);
         this.address = address;
@@ -80,7 +80,7 @@ public class Employee extends User {
         ++nextId;
     }
 
-    public Employee(int id, String firstName, String lastName, String username, String password, int phoneNumber, String authorization, String address, String position, String graduatedCollege, int yearOfGraduation, String collegeGrade) {
+    public Employee(int id, String firstName, String lastName, String username, String password, String phoneNumber, String authorization, String address, String position, String graduatedCollege, int yearOfGraduation, String collegeGrade) {
         super(firstName, lastName, username, password, phoneNumber);
         this.setId(id);
         this.authorization = authorization;
@@ -93,19 +93,20 @@ public class Employee extends User {
             nextId = this.getId() - 199999;
         }
     }
-    public void menu(Scanner scanner, ArrayList<Employee> emps, ArrayList<Client> clients, ArrayList<Account> accs, ArrayList<Transaction> transactions){
+
+    public void menu(Scanner scanner, ArrayList<Employee> employees, ArrayList<Client> clients, ArrayList<Account> accounts, ArrayList<Transaction> transactions) {
 
     }
 
-    public void editPersonalInfo(Scanner scanner){
+    public void editPersonalInfo(Scanner scanner) {
 
     }
 
-    public void addNewClient(Scanner scanner, ArrayList<Client> clients, ArrayList<Employee> emps, ArrayList<Account> accs) {
+    public void addNewClient(Scanner scanner, ArrayList<Client> clients, ArrayList<Employee> employees, ArrayList<Account> accounts) {
 
     }
 
-    public void addNewClientAccount(Scanner scanner, ArrayList<Client> clients, ArrayList<Account> accs){
+    public void addNewClientAccount(Scanner scanner, ArrayList<Client> clients, ArrayList<Account> accounts) {
 
     }
 
@@ -113,19 +114,19 @@ public class Employee extends User {
 
     }
 
-    public void editClientAccount(Scanner scanner, ArrayList<Client> clients, ArrayList<Account> accs) {
+    public void editClientAccount(Scanner scanner, ArrayList<Client> clients, ArrayList<Account> accounts) {
 
     }
 
-    public void findClient(Scanner scanner, ArrayList<Client> clients, ArrayList<Account> accs){
+    public void findClient(Scanner scanner, ArrayList<Client> clients, ArrayList<Account> accounts) {
 
     }
 
-    public void deleteClientAccount(Scanner scanner, ArrayList<Account> accs) {
+    public void deleteClientAccount(Scanner scanner, ArrayList<Account> accounts) {
 
     }
 
-    public void makeNewTransaction(Scanner scanner, ArrayList<Client> clients, ArrayList<Account> accs, ArrayList<Transaction> transactions) {
+    public void makeNewTransaction(Scanner scanner, ArrayList<Client> clients, ArrayList<Account> accounts, ArrayList<Transaction> transactions) {
 
     }
 }

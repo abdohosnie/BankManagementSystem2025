@@ -6,6 +6,7 @@ public class Transaction {
     protected String date;
     protected int clientId;
     protected int accountNumber;
+    private String cardNumber;
     protected int employeeId;
     protected TransactionType transactionType;
     protected double amount;
@@ -24,7 +25,7 @@ public class Transaction {
         ++nextId;
     }
 
-    public Transaction(int id, String date, int clientId, int accountNumber, int employeeId, TransactionType transactionType, float amount) {
+    public Transaction(int id, String date, int clientId, int accountNumber, int employeeId, TransactionType transactionType, double amount) {
         this.id = id;
         this.date = date;
         this.clientId = clientId;
@@ -37,6 +38,14 @@ public class Transaction {
         }
     }
 
+    public Transaction(int clientId, int accountNumber, String cardNumber, TransactionType transactionType, double amount) {
+        this.clientId = clientId;
+        this.accountNumber = accountNumber;
+        this.cardNumber = cardNumber;
+        this.transactionType = transactionType;
+        this.amount = amount;
+    }
+
     public String details() {
         String str = "";
         str = str + "Transaction ID: " + this.id + "\n";
@@ -47,6 +56,7 @@ public class Transaction {
         str = str + "Account number: " + this.accountNumber + "\n";
         return str;
     }
+
     public int getId() {
         return this.id;
     }
@@ -99,7 +109,7 @@ public class Transaction {
         return this.amount;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 }

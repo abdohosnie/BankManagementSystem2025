@@ -1,41 +1,59 @@
 public class CreditCard {
     private final String cardNumber;
-    private final double creditLimit = 20000.0;  // Fixed credit limit of 20,000 LE
+    private final double creditLimit = 20000.0;
     private double balance;  // Amount spent so far
-    private boolean isActive = true;  // Flag to track if the card is active
-    private final Client owner;  // The client who owns this card
+    private CardState cardState;
+    private final Client owner;
+    private final int accountNumber;
 
-    public CreditCard(String cardNumber, Client owner) {
+    public CreditCard(String cardNumber, int accountNumber, CardState cardState, Client owner) {
         this.cardNumber = cardNumber;
+        this.accountNumber = accountNumber;
+        this.cardState = CardState.INACTIVE;
         this.owner = owner;
-        this.balance = 0.0;  // No balance initially
+        this.balance = 0.0;
     }
 
     public String getCardNumber() {
         return cardNumber;
     }
 
-    public boolean isActive() {
-        return isActive;
+    public int getAccountNumber() {
+        return accountNumber;
     }
 
-    public void disableCard() {
-        this.isActive = false;
-        System.out.println("Credit card " + cardNumber + " has been disabled.");
+    public CardState isActive() {
+        return cardState;
+    }
+
+    public void activateCard() {
+        this.cardState = CardState.ACTIVE;
+        System.out.println("Credit card " + cardNumber + " has been activated successfully!");
+    }
+
+    public void deactivateCard() {
+        this.cardState = CardState.INACTIVE;
+        System.out.println("Credit card " + cardNumber + " has been deactivated successfully!");
     }
 
     public boolean pay(double amount) {
-        if (!isActive) {
-            System.out.println("This card is disabled.");
+        if (cardState == CardState.INACTIVE) {
+            System.out.println("This card is inactive. Please activate it before making payments.");
+            return false;
+        }
+        if (amount <= 0) {
+            System.out.println("Invalid amount. Payment amount must be greater than zero.");
             return false;
         }
         if (amount <= (creditLimit - balance)) {
             balance += amount;
-            owner.addLoyaltyPoints(amount);  // Add loyalty points
-            System.out.println("Payment of " + amount + " LE successful with card " + cardNumber);
+            owner.addLoyaltyPoints(amount);
+            System.out.println("Payment of " + amount + " LE successful using card " + cardNumber + ".");
+            System.out.println("Available credit remaining: " + getAvailableCredit() + " LE.");
             return true;
         } else {
-            System.out.println("Insufficient credit limit.");
+            System.out.println("Payment failed. Insufficient credit limit.");
+            System.out.println("Available credit: " + getAvailableCredit() + " LE.");
             return false;
         }
     }

@@ -7,9 +7,9 @@ abstract class User {
     protected String lastName;
     protected String username;
     protected String password;
-    protected int phoneNumber;
+    protected String phoneNumber;
 
-    public User(String firstName, String lastName, String username, String password, int phoneNumber) {
+    public User(String firstName, String lastName, String username, String password, String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -57,11 +57,11 @@ abstract class User {
         this.password = password;
     }
 
-    public int getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -74,5 +74,5 @@ abstract class User {
         return str;
     }
 
-    public abstract void menu(Scanner scanner, ArrayList<Employee> emps, ArrayList<Client> clients, ArrayList<Account> accs, ArrayList<Transaction> transactions);
+    public abstract void menu(Scanner scanner, ArrayList<Employee> employees, ArrayList<Client> clients, ArrayList<Account> accounts, ArrayList<Transaction> transactions);
 }

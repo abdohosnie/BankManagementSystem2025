@@ -40,21 +40,21 @@ public class Client extends User {
     }
 
     public void requestCreditCard(ArrayList<Client> clients, ArrayList<Account> accounts) {
-        int accountNumber = -1;
+        Account linkedAccount = null;
         for (Account account : accounts) {
             if (account.getClientId() == this.getId()) {
-                accountNumber = account.getAccountNumber();
+                linkedAccount = account;
                 break;
             }
         }
-        if (accountNumber == -1) {
+        if (linkedAccount == null) {
             System.out.println("No associated account found for this client.");
             return;
         }
         String cardNumber = Generator.generateCardNumber();
-        CreditCard newCard = new CreditCard(cardNumber, accountNumber, CardState.ACTIVE, this);
+        CreditCard newCard = new CreditCard(cardNumber, linkedAccount, this);
         creditCards.add(newCard);
-        System.out.println("Credit card with number " + cardNumber + " has been issued and linked to account number " + accountNumber + ".");
+        System.out.println("Credit card with number " + cardNumber + " has been issued and linked to account number: " + linkedAccount.getAccountNumber() + ".");
     }
 
     public void disableCreditCard(String cardNumber) {
@@ -67,7 +67,7 @@ public class Client extends User {
     public boolean payWithCreditCard(String cardNumber, double amount) {
         for (CreditCard card : creditCards) {
             if (card.getCardNumber().equals(cardNumber)) {
-                return card.pay(amount);
+                return card.pay(amount, cardNumber);
             }
         }
         System.out.println("Card not found.");
@@ -162,11 +162,76 @@ public class Client extends User {
     }
 
     public void showTransactionsHistory(ArrayList<Transaction> transactions) {
-
+        if (!transactions.isEmpty()) {
+            for (Transaction transaction : transactions) {
+                if (transaction.clientId == this.getId()) {
+                    System.out.println(transaction.details());
+                }
+            }
+        } else System.out.println("No transactions found!");
     }
 
     public void makeNewAccount(Scanner scanner, ArrayList<Account> accounts, ArrayList<Client> clients) {
-
+        while (true) {
+            System.out.println("1. New current account\n2. New savings account\n3. back");
+            int i = 0;
+            boolean pass = false;
+            while (!pass) {
+                try {
+                    i = Integer.parseInt(scanner.nextLine());
+                    pass = true;
+                } catch (NumberFormatException nfe) {
+                    System.out.println("Invalid input. Only integers are allowed.");
+                }
+            }
+            if (i == 1) {
+                System.out.println("Warning! Minimum balance for current accounts is: " + AccountType.CURRENT.getMinBalance());
+                double balance = 0;
+                pass = false;
+                while (!pass) {
+                    try {
+                        System.out.println("Balance: ");
+                        balance = Double.parseDouble(scanner.next());
+                        pass = true;
+                    } catch (NumberFormatException nfe) {
+                        System.out.println("Invalid input. Only integers are allowed.");
+                    }
+                }
+                if (balance < 0) {
+                    System.out.println("Can't have negative balance!");
+                    return;
+                } else if (balance < AccountType.CURRENT.getMinBalance()) {
+                    System.out.println("Minimum balance is: " + AccountType.CURRENT.getMinBalance());
+                    return;
+                } else {
+                    Account account = new Account(this.getId(), AccountState.ACTIVE, AccountType.CURRENT, balance);
+                    accounts.add(account);
+                    Client.updateTotalBalance(clients, accounts);
+                }
+            } else if (i == 2) {
+                float balance = 0;
+                pass = false;
+                while (!pass) {
+                    try {
+                        System.out.println("Balance:");
+                        balance = Float.parseFloat(scanner.nextLine());
+                        pass = true;
+                    } catch (NumberFormatException nfe) {
+                        System.out.println("Invalid input. Only decimals are allowed.");
+                    }
+                }
+                if (balance < 0) {
+                    System.out.println("Can't have negative balance");
+                    return;
+                } else {
+                    Account account = new Account(this.getId(), AccountState.ACTIVE, AccountType.SAVING, balance);
+                    accounts.add(account);
+                    Client.updateTotalBalance(clients, accounts);
+                }
+            } else if (i == 3) {
+                return;
+            }
+        }
     }
 
     public void makeNewTransaction(Scanner scanner, ArrayList<Client> clients, ArrayList<Account> accounts, ArrayList<Transaction> transactions) {
@@ -371,7 +436,7 @@ public class Client extends User {
                     }
                 }
 
-                boolean paymentSuccessful = selectedCard.pay(amount);
+                boolean paymentSuccessful = this.payWithCreditCard(cardNumber, amount);
                 if (paymentSuccessful) {
                     System.out.println("Payment of " + amount + " LE was successful using credit card " + selectedCard.getCardNumber());
                     Transaction transaction = new Transaction(this.getId(), selectedCard.getAccountNumber(), selectedCard.getCardNumber(), TransactionType.CREDIT_PAYMENT, amount);

@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Employee extends User {
-    private String authorization = "Unauthorized";
+    private AuthorizationState authorization;
     private String address;
     private String position;
     private String graduatedCollege;
@@ -10,11 +10,12 @@ public class Employee extends User {
     private String collegeGrade;
     public static int nextId = 0;
 
-    public String getAuthorization() {
+
+    public AuthorizationState getAuthorization() {
         return this.authorization;
     }
 
-    public void setAuthorization(String authorization) {
+    public void setAuthorization(AuthorizationState authorization) {
         this.authorization = authorization;
     }
 
@@ -80,7 +81,7 @@ public class Employee extends User {
         ++nextId;
     }
 
-    public Employee(int id, String firstName, String lastName, String username, String password, String phoneNumber, String authorization, String address, String position, String graduatedCollege, int yearOfGraduation, String collegeGrade) {
+    public Employee(int id, String firstName, String lastName, String username, String password, String phoneNumber, AuthorizationState authorization, String address, String position, String graduatedCollege, int yearOfGraduation, String collegeGrade) {
         super(firstName, lastName, username, password, phoneNumber);
         this.setId(id);
         this.authorization = authorization;

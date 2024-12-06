@@ -1,17 +1,15 @@
 public class CreditCard {
     private final String cardNumber;
-    private final double creditLimit = 20000.0;
-    private double balance;  // Amount spent so far
+    private static final double creditLimit = 20000.0;
     private CardState cardState;
+    private final Account linkedAccount;
     private final Client owner;
-    private final int accountNumber;
 
-    public CreditCard(String cardNumber, int accountNumber, CardState cardState, Client owner) {
+    public CreditCard(String cardNumber, Account linkedAccount, Client owner) {
         this.cardNumber = cardNumber;
-        this.accountNumber = accountNumber;
+        this.linkedAccount = linkedAccount;
         this.cardState = CardState.INACTIVE;
         this.owner = owner;
-        this.balance = 0.0;
     }
 
     public String getCardNumber() {
@@ -19,7 +17,7 @@ public class CreditCard {
     }
 
     public int getAccountNumber() {
-        return accountNumber;
+        return linkedAccount.getAccountNumber();
     }
 
     public CardState isActive() {
@@ -36,7 +34,11 @@ public class CreditCard {
         System.out.println("Credit card " + cardNumber + " has been deactivated successfully!");
     }
 
-    public boolean pay(double amount) {
+    public double getAvailableCredit() {
+        return creditLimit - linkedAccount.getBalance();
+    }
+
+    public boolean pay(double amount, String cardNumber) {
         if (cardState == CardState.INACTIVE) {
             System.out.println("This card is inactive. Please activate it before making payments.");
             return false;
@@ -45,8 +47,9 @@ public class CreditCard {
             System.out.println("Invalid amount. Payment amount must be greater than zero.");
             return false;
         }
-        if (amount <= (creditLimit - balance)) {
-            balance += amount;
+        double availableCredit = getAvailableCredit();
+        if (amount <= availableCredit) {
+            linkedAccount.setBalance(linkedAccount.getBalance() - amount);
             owner.addLoyaltyPoints(amount);
             System.out.println("Payment of " + amount + " LE successful using card " + cardNumber + ".");
             System.out.println("Available credit remaining: " + getAvailableCredit() + " LE.");
@@ -56,9 +59,5 @@ public class CreditCard {
             System.out.println("Available credit: " + getAvailableCredit() + " LE.");
             return false;
         }
-    }
-
-    public double getAvailableCredit() {
-        return creditLimit - balance;
     }
 }

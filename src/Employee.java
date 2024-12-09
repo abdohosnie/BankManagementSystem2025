@@ -10,7 +10,6 @@ public class Employee extends User {
     private String collegeGrade;
     public static int nextId = 0;
 
-
     public AuthorizationState getAuthorization() {
         return this.authorization;
     }
@@ -61,12 +60,12 @@ public class Employee extends User {
 
     public String details() {
         String str = super.details();
-        str = str + "Authorization: " + this.getAuthorization() + "\n";
-        str = str + "Address: " + this.getAddress() + "\n";
-        str = str + "Position: " + this.getPosition() + "\n";
-        str = str + "Graduated college: " + this.getGraduatedCollege() + "\n";
-        str = str + "Year of graduation: " + this.getYearOfGraduation() + "\n";
-        str = str + "College grade: " + this.collegeGrade + "\n###################\n";
+        str += "Authorization: " + this.getAuthorization() + "\n" +
+                "Address: " + this.getAddress() + "\n" +
+                "Position: " + this.getPosition() + "\n" +
+                "Graduated college: " + this.getGraduatedCollege() + "\n" +
+                "Year of graduation: " + this.getYearOfGraduation() + "\n" +
+                "College grade: " + this.collegeGrade + "\n###################\n";
         return str;
     }
 

@@ -3,7 +3,7 @@ import java.util.Date;
 
 public class Transaction {
     protected int id;
-    protected String date;
+    protected Date date;
     protected int clientId;
     protected int accountNumber;
     private String cardNumber;
@@ -12,11 +12,11 @@ public class Transaction {
     protected double amount;
     public static int nextId = 0;
 
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
     public Transaction(int clientId, int accountNumber, int employeeId, TransactionType transactionType, double amount) {
         this.id = 400000 + nextId;
-        Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        this.date = sdf.format(date);
+        this.date = new Date();
         this.clientId = clientId;
         this.accountNumber = accountNumber;
         this.employeeId = employeeId;
@@ -25,14 +25,20 @@ public class Transaction {
         ++nextId;
     }
 
-    public Transaction(int id, String date, int clientId, int accountNumber, int employeeId, TransactionType transactionType, double amount) {
+    public Transaction(int id, String date, int clientId, int accountNumber, int employeeId, TransactionType transactionType, double amount, String cardNumber) {
         this.id = id;
-        this.date = date;
+        try {
+            this.date = sdf.parse(date);
+        } catch (Exception e) {
+            System.out.println("Invalid date format: " + date + ". Setting to current date.");
+            this.date = new Date();
+        }
         this.clientId = clientId;
         this.accountNumber = accountNumber;
         this.employeeId = employeeId;
         this.transactionType = transactionType;
         this.amount = amount;
+        this.cardNumber = cardNumber;
         if (nextId < this.id - 399999) {
             nextId = this.id - 399999;
         }
@@ -61,63 +67,32 @@ public class Transaction {
         return this.id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getDate() {
-        return this.date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
+    public Date getDate() {
+        return date;
     }
 
     public int getClientId() {
         return this.clientId;
     }
 
-    public void setClientId(int clientId) {
-        this.clientId = clientId;
-    }
-
     public int getAccountNumber() {
         return this.accountNumber;
-    }
-
-    public void setAccountNumber(int accountNumber) {
-        this.accountNumber = accountNumber;
     }
 
     public int getEmployeeId() {
         return this.employeeId;
     }
 
-    public void setEmployeeId(int employeeId) {
-        this.employeeId = employeeId;
-    }
-
     public TransactionType getTransactionType() {
         return this.transactionType;
-    }
-
-    public void setTransactionType(TransactionType transactionType) {
-        this.transactionType = transactionType;
     }
 
     public double getAmount() {
         return this.amount;
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
     public String getCardNumber() {
         return cardNumber;
     }
 
-    public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber;
-    }
 }

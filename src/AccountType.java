@@ -1,6 +1,6 @@
 public enum AccountType {
     SAVING("Saving", 0, 0.05),
-    CURRENT("Current", 3000, 0);
+    CURRENT("Current", 3000, 0.0);
 
     private final String description;
     private final double minBalance;

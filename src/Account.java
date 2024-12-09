@@ -1,7 +1,7 @@
 public class Account {
-    private int accountNumber;
+    private final int accountNumber;
     private final int clientId;
-    private AccountType accountType;
+    private final AccountType accountType;
     private AccountState accountState;
     private double balance;
     public static int nextNumber = 0;
@@ -15,12 +15,16 @@ public class Account {
         nextNumber++;
     }
 
-    public int getAccountNumber() {
-        return accountNumber;
+    public Account(int accountNumber, int clientId, AccountType accountType, AccountState accountState, double balance) {
+        this.accountNumber = accountNumber;
+        this.clientId = clientId;
+        this.accountType = accountType;
+        this.accountState = accountState;
+        this.balance = balance;
     }
 
-    public void setAccountNumber(int accountNumber) {
-        this.accountNumber = accountNumber;
+    public int getAccountNumber() {
+        return accountNumber;
     }
 
     public int getClientId() {
@@ -31,22 +35,18 @@ public class Account {
         return accountState;
     }
 
-    public void activateAccount(AccountState accountState) {
+    public void activateAccount() {
         this.accountState = AccountState.ACTIVE;
         System.out.println("Account activated successfully!");
     }
 
-    public void deactivateAccount(AccountState accountState) {
+    public void deactivateAccount() {
         this.accountState = AccountState.INACTIVE;
         System.out.println("Account deactivated successfully!");
     }
 
     public AccountType getAccountType() {
         return accountType;
-    }
-
-    public void setAccountType(AccountType accountType) {
-        this.accountType = accountType;
     }
 
     public double getBalance() {
@@ -86,7 +86,7 @@ public class Account {
     }
 
     private void applyFees() {
-        double fees = 50.0F;
+        double fees = 50.0;
         System.out.println("Balance below minimum threshold. Applying fee of " + fees + " LE.");
         balance -= fees;
 

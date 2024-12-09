@@ -2,54 +2,37 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Login {
-    public Login() {
-    }
 
     public static int login(Scanner scanner, ArrayList<Client> clients, ArrayList<Employee> employees) {
-        System.out.println("Username or ID: ");
-        String username = scanner.nextLine();
-        System.out.println("Password: ");
-        String s = scanner.nextLine();
+        System.out.print("Username: ");
+        String username = scanner.nextLine().trim(); // Trim to remove extra spaces
+        System.out.print("Password: ");
+        String password = scanner.nextLine();
 
-        try {
-            int i = Integer.parseInt(username);
-            if (s.equals("admin") && i == 0) {
-                return 0;
-            } else {
-                if (i / 100000 == 1) {
-                    for (Client client : clients) {
-                        if (i == client.getId() && s.equals(client.getPassword())) {
-                            return client.getId();
-                        }
-                    }
-                } else if (i / 100000 == 2) {
-                    for (Employee emp : employees) {
-                        if (i == emp.getId() && s.equals(emp.getPassword())) {
-                            return emp.getId();
-                        }
-                    }
-                }
+        if (isAdmin(username, password)) {
+            System.out.println("Admin logged in successfully!");
+            return 0;
+        }
 
-                return -1;
-            }
-        } catch (NumberFormatException var9) {
-            if (s.equals("admin") && username.equals("admin")) {
-                return 0;
-            } else {
-                for (Employee emp : employees) {
-                    if (s.equals(emp.getPassword()) && username.equals(emp.getUsername())) {
-                        return emp.getId();
-                    }
-                }
-
-                for (Client client : clients) {
-                    if (s.equals(client.getPassword()) && username.equals(client.getUsername())) {
-                        return client.getId();
-                    }
-                }
-
-                return -1;
+        for (Employee employee : employees) {
+            if (employee.getUsername().equals(username) && employee.getPassword().equals(password)) {
+                System.out.println("Employee logged in successfully!");
+                return employee.getId();
             }
         }
+
+        for (Client client : clients) {
+            if (client.getUsername().equals(username) && client.getPassword().equals(password)) {
+                System.out.println("Client logged in successfully!");
+                return client.getId();
+            }
+        }
+
+        System.out.println("Invalid username or password. Please try again.");
+        return -1;
+    }
+
+    private static boolean isAdmin(String username, String password) {
+        return username.equalsIgnoreCase("admin") && password.equals("admin");
     }
 }

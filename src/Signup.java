@@ -131,7 +131,6 @@ public class Signup {
                         System.out.println("Invalid input. Only integers are allowed.");
                     }
                 }
-                scanner.nextLine();
                 System.out.println("Address:");
                 String address = scanner.nextLine();
                 System.out.println("Position:");

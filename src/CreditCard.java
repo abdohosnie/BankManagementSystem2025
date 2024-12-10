@@ -4,25 +4,25 @@ public class CreditCard {
     private CardState cardState;
     private final Account linkedAccount;
     private final Client owner;
-    private double availableCredits;
+    private final double availableCredits;
+    private double totalSpent;
 
-    public double getAvailableCredits() {
-        return availableCredits;
-    }
-
-    public CreditCard(String cardNumber, Account linkedAccount, Client owner) {
+    public CreditCard(String cardNumber, Account linkedAccount, Client owner, double availableCredits) {
         this.cardNumber = cardNumber;
         this.linkedAccount = linkedAccount;
         this.cardState = CardState.INACTIVE;
+        this.availableCredits = availableCredits;
         this.owner = owner;
+        this.totalSpent = 0.0;
     }
 
-    public CreditCard(String cardNumber, CardState cardState, Account linkedAccount, Client owner, double availableCredits) {
+    public CreditCard(String cardNumber, CardState cardState, Account linkedAccount, Client owner, double totalSpent) {
         this.cardNumber = cardNumber;
         this.cardState = cardState;
         this.linkedAccount = linkedAccount;
         this.owner = owner;
-        this.availableCredits = availableCredits;
+        this.availableCredits = creditLimit - totalSpent;
+        this.totalSpent = totalSpent;
     }
 
     public Client getOwner() {
@@ -33,8 +33,16 @@ public class CreditCard {
         return cardNumber;
     }
 
+    public double getTotalSpent() {
+        return totalSpent;
+    }
+
     public CardState getCardState() {
         return cardState;
+    }
+
+    public double getAvailableCredits() {
+        return (creditLimit - totalSpent);
     }
 
     public Account getLinkedAccount() {
@@ -57,28 +65,31 @@ public class CreditCard {
         this.cardState = CardState.INACTIVE;
     }
 
-    public double getAvailableCredit() {
-        return creditLimit - linkedAccount.getBalance();
-    }
-
     public boolean pay(double amount) {
         if (cardState == CardState.INACTIVE) {
             System.out.println("This card is inactive. Please activate it before making payments.");
             return false;
         }
+
         if (amount <= 0) {
             System.out.println("Invalid amount. Payment amount must be greater than zero.");
             return false;
         }
-        double availableCredit = getAvailableCredit();
+
+        double availableCredit = getAvailableCredits();
+
         if (amount <= availableCredit) {
             linkedAccount.setBalance(linkedAccount.getBalance() - amount);
+            totalSpent += amount;
+
             owner.addLoyaltyPoints(amount);
-            System.out.println("Available credit remaining: " + getAvailableCredit() + " LE.");
+
+            System.out.println("Payment of " + amount + " LE successful using card " + cardNumber + ".");
+            System.out.println("Available credit remaining: " + getAvailableCredits() + " LE.");
             return true;
         } else {
             System.out.println("Payment failed. Insufficient credit limit.");
-            System.out.println("Available credit: " + getAvailableCredit() + " LE.");
+            System.out.println("Available credit: " + availableCredit + " LE.");
             return false;
         }
     }

@@ -18,7 +18,7 @@ public class Client extends User {
     public Client(String firstName, String lastName, String username, String password, String phoneNumber, double balance) {
         super(firstName, lastName, username, password, phoneNumber);
         this.setId(100000 + nextId);
-        this.creditCards = new ArrayList<CreditCard>();
+        this.creditCards = new ArrayList<>();
         this.loyaltyPoints = 0;
         this.balance = balance;
         nextId++;
@@ -35,11 +35,15 @@ public class Client extends User {
         }
     }
 
+    public ArrayList<CreditCard> getCreditCards() {
+        return creditCards;
+    }
+
     public double getLoyaltyPoints() {
         return loyaltyPoints;
     }
 
-    public void requestCreditCard(ArrayList<Account> accounts) {
+    public void requestCreditCard(ArrayList<Account> accounts, ArrayList<CreditCard> cards) {
         Account linkedAccount = null;
         for (Account account : accounts) {
             if (account.getClientId() == this.getId()) {
@@ -52,16 +56,10 @@ public class Client extends User {
             return;
         }
         String cardNumber = Generator.generateCardNumber();
-        CreditCard newCard = new CreditCard(cardNumber, linkedAccount, this);
+        CreditCard newCard = new CreditCard(cardNumber, linkedAccount, this, 20000);
         creditCards.add(newCard);
+        cards.add(newCard);
         System.out.println("Credit card with number - " + cardNumber + " - has been issued and linked to account number: " + linkedAccount.getAccountNumber() + ".");
-    }
-
-    public void disableCreditCard(String cardNumber) {
-        for (CreditCard card : creditCards) {
-            card.deactivateCard();
-        }
-        System.out.println("Card not found.");
     }
 
     public boolean payWithCreditCard(String cardNumber, double amount) {
@@ -244,7 +242,7 @@ public class Client extends User {
             boolean pass = false;
             while (!pass) {
                 try {
-                    i = Integer.parseInt(scanner.next());
+                    i = Integer.parseInt(scanner.nextLine());
                     pass = true;
                 } catch (NumberFormatException e) {
                     System.out.println("Invalid input! Only integers are allowed.");
@@ -275,14 +273,12 @@ public class Client extends User {
                     if (amount < 0.0) {
                         System.out.println("Can't enter negative numbers.");
                     }
-                    boolean exists = false;
                     for (Account account : accounts) {
                         if (account.getAccountNumber() == accNum) {
                             account.deposit(amount);
                             Transaction transaction = new Transaction(account.getClientId(), account.getAccountNumber(), 0, TransactionType.DEPOSIT, amount);
                             transactions.add(transaction);
                             Client.updateTotalBalance(clients, accounts);
-                            exists = true;
                             break;
                         } else {
                             System.out.println("Account doesn't exist!");
@@ -317,7 +313,6 @@ public class Client extends User {
                     System.out.println("Can't enter negative amount");
                     return;
                 }
-                boolean exists = false;
                 for (Account account : accounts) {
                     if (account.getAccountNumber() == accNum) {
                         if (account.getBalance() < amount) {
@@ -328,7 +323,6 @@ public class Client extends User {
                             Transaction transaction = new Transaction(account.getClientId(), account.getAccountNumber(), 0, TransactionType.WITHDRAWAL, amount);
                             transactions.add(transaction);
                             Client.updateTotalBalance(clients, accounts);
-                            exists = true;
                             break;
                         }
                     } else {
@@ -363,7 +357,6 @@ public class Client extends User {
                     System.out.println("Can't enter negative amount!");
                     return;
                 }
-                boolean exists = false;
                 for (Account account : accounts) {
                     if (account.getAccountNumber() == accNum) {
                         if (account.getBalance() < amount) {
@@ -428,7 +421,7 @@ public class Client extends User {
 
                 while (!pass) {
                     try {
-                        amount = Double.parseDouble(scanner.next());
+                        amount = Double.parseDouble(scanner.nextLine());
                         if (amount <= 0) {
                             System.out.println("Invalid amount. Please enter a positive number.");
                         } else {
@@ -441,7 +434,6 @@ public class Client extends User {
 
                 boolean paymentSuccessful = this.payWithCreditCard(cardNumber, amount);
                 if (paymentSuccessful) {
-                    System.out.println("Payment of " + amount + " LE was successful using credit card " + selectedCard.getCardNumber());
                     Transaction transaction = new Transaction(this.getId(), selectedCard.getAccountNumber(), selectedCard.getCardNumber(), TransactionType.CREDIT_PAYMENT, amount);
                     transactions.add(transaction);
                 } else {
@@ -462,7 +454,7 @@ public class Client extends User {
                 System.out.println("Card Number: " + card.getCardNumber());
                 System.out.println("Linked Account: " + card.getLinkedAccount().getAccountNumber());
                 System.out.println("Card State: " + card.getCardState());
-                System.out.println("Available Credit: " + card.getAvailableCredits());
+                System.out.println("Available Credit: " + (20000 - card.getTotalSpent()));
                 System.out.println("--------------------");
             }
         }
@@ -508,109 +500,79 @@ public class Client extends User {
         }
     }
 
-    public void manageCards(Scanner scanner, ArrayList<Account> accounts) {
+    public void manageCards(Scanner scanner, ArrayList<Account> accounts, ArrayList<CreditCard> cards) {
         while (true) {
             System.out.println("\nCard Management\n1. View cards\n2. Request a new credit card\n3. Activate a credit card\n4. Deactivate a credit card\n5. Back to main menu");
             int i = 0;
             boolean pass = false;
             while (!pass) {
                 try {
-                    i = Integer.parseInt(scanner.next());
+                    i = Integer.parseInt(scanner.nextLine());
                     pass = true;
                 } catch (NumberFormatException nfe) {
                     System.out.println("Invalid input. Only integers are allowed.");
                 }
             }
-            switch (i) {
-                case 1:
-                    this.viewCards();
-                    break;
-
-                case 2:
-                    this.requestCreditCard(accounts);
-                    break;
-
-                case 3:
-                    this.activateCard(scanner);
-                    break;
-
-                case 4:
-                    this.deactivateCard(scanner);
-                    break;
-
-                case 5:
-                    return;
-
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
+            if (i == 1) {
+                this.viewCards();
+            } else if (i == 2) {
+                this.requestCreditCard(accounts, cards);
+            } else if (i == 3) {
+                this.activateCard(scanner);
+            } else if (i == 4) {
+                this.deactivateCard(scanner);
+            } else if (i == 5) {
+                return;
+            } else System.out.println("Invalid choice. Please try again.");
         }
     }
 
     @Override
     public String details() {
-        String str = super.details();
-        str += "Loyalty Points: " + this.getLoyaltyPoints() + '\n';
+        StringBuilder str = new StringBuilder(super.details());
+        str.append("Loyalty Points: ").append(this.getLoyaltyPoints()).append('\n');
         if (!creditCards.isEmpty()) {
-            str += "Credit Cards: " + '\n';
+            str.append("Credit Cards: " + '\n');
             for (CreditCard card : creditCards) {
-                str += "- " + card.getCardNumber() + " (Active: " + card.isActive() + ")\n";
+                str.append("- ").append(card.getCardNumber()).append(" (Active: ").append(card.isActive()).append(")\n");
             }
-            return str;
+            return str.toString();
         }
-        str += "No credit cards available.\n";
-        return str;
+        str.append("No credit cards available.\n");
+        return str.toString();
     }
 
     @Override
-    public void menu(Scanner scanner, ArrayList<Employee> employees, ArrayList<Client> clients, ArrayList<Account> accounts, ArrayList<Transaction> transactions) {
+    public void menu(Scanner scanner, ArrayList<Employee> employees, ArrayList<Client> clients, ArrayList<Account> accounts, ArrayList<Transaction> transactions, ArrayList<CreditCard> cards) {
         int i = 0;
         while (true) {
             System.out.println("\n1. Edit personal info\n2. Show profile details\n3. Show accounts' details\n4. Manage cards\n5. Make a new transaction\n6. Show transaction history\n7. Make a new account\n8. Logout");
             boolean pass = false;
             while (!pass) {
                 try {
-                    i = Integer.parseInt(scanner.next());
+                    i = Integer.parseInt(scanner.nextLine());
                     pass = true;
                 } catch (NumberFormatException nfe) {
                     System.out.println("Invalid input. Only integers are allowed.");
                 }
             }
-            switch (i) {
-                case 1:
-                    this.editPersonalInfo(scanner);
-                    break;
-
-                case 2:
-                    System.out.println(this.details());
-                    break;
-
-                case 3:
-                    this.displayAccounts(accounts);
-                    break;
-
-                case 4:
-                    this.manageCards(scanner, accounts);
-                    break;
-
-                case 5:
-                    this.makeNewTransaction(scanner, clients, accounts, transactions);
-                    break;
-
-                case 6:
-                    this.showTransactionsHistory(transactions);
-                    break;
-
-                case 7:
-                    this.makeNewAccount(scanner, accounts, clients);
-                    break;
-
-                case 8:
-                    return;
-
-                default:
-                    System.out.println("Invalid Choice! Try again.");
-            }
+            if (i == 1) {
+                this.editPersonalInfo(scanner);
+            } else if (i == 2) {
+                System.out.println(this.details());
+            } else if (i == 3) {
+                this.displayAccounts(accounts);
+            } else if (i == 4) {
+                this.manageCards(scanner, accounts, cards);
+            } else if (i == 5) {
+                this.makeNewTransaction(scanner, clients, accounts, transactions);
+            } else if (i == 6) {
+                this.showTransactionsHistory(transactions);
+            } else if (i == 7) {
+                this.makeNewAccount(scanner, accounts, clients);
+            } else if (i == 8) {
+                return;
+            } else System.out.println("Invalid Choice! Try again.");
         }
     }
 }

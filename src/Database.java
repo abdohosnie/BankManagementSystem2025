@@ -17,7 +17,6 @@ public class Database {
     }
 
     public void load(ArrayList<Client> clients, ArrayList<Employee> employees, ArrayList<Account> accounts, ArrayList<Transaction> transactions, ArrayList<CreditCard> cards) {
-
         try (BufferedReader clientsFile = new BufferedReader(new FileReader(clientsFileName))) {
             String str;
             while ((str = clientsFile.readLine()) != null && !str.isEmpty()) {
@@ -124,7 +123,7 @@ public class Database {
                     String[] data = str.split(",");
                     String cardNumber = data[0];
                     int accountNumber = Integer.parseInt(data[1]);
-                    double availableCredit = Double.parseDouble(data[2]);
+                    double totalSpent = Double.parseDouble(data[2]);
                     String ownerId = data[3];
                     CardState cardState = CardState.values()[Integer.parseInt(data[4])];
 
@@ -140,8 +139,10 @@ public class Database {
                         continue;
                     }
 
-                    CreditCard card = new CreditCard(cardNumber, cardState, linkedAccount, owner, availableCredit);
+                    CreditCard card = new CreditCard(cardNumber, cardState, linkedAccount, owner, totalSpent);
                     cards.add(card);
+
+                    owner.getCreditCards().add(card);
                 } catch (Exception e) {
                     System.out.println("Invalid data format in line: " + str + ". Skipping this record.");
                 }

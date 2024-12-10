@@ -45,11 +45,13 @@ public class Transaction {
     }
 
     public Transaction(int clientId, int accountNumber, String cardNumber, TransactionType transactionType, double amount) {
+        this.id = 400000 + nextId;
         this.clientId = clientId;
         this.accountNumber = accountNumber;
         this.cardNumber = cardNumber;
         this.transactionType = transactionType;
         this.amount = amount;
+        nextId++;
     }
 
     public String details() {

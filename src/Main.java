@@ -8,6 +8,7 @@ public class Main {
         ArrayList<Account> accounts = new ArrayList<>();
         ArrayList<Transaction> transactions = new ArrayList<>();
         ArrayList<CreditCard> cards = new ArrayList<>();
+        Admin admin = new Admin("Admin", "", "admin", "admin", "");
         Database database = new Database();
         database.load(clients, employees, accounts, transactions, cards);
         Scanner scanner = new Scanner(System.in);
@@ -36,18 +37,18 @@ public class Main {
                 }
             }
             if (curId == 0) {
-                //  Admin.menu(scanner, clients, employees, transactions);
+                  admin.menu(scanner, employees, clients, accounts, transactions, cards);
             } else if (curId / 100000 == 2) {
                 for (Employee emp : employees) {
                     if (emp.getId() == curId) {
-                        emp.menu(scanner, employees, clients, accounts, transactions);
+                        emp.menu(scanner, employees, clients, accounts, transactions, cards);
                         break;
                     }
                 }
             } else if (curId / 100000 == 1) {
                 for (Client client : clients) {
                     if (client.getId() == curId) {
-                        client.menu(scanner, employees, clients, accounts, transactions);
+                        client.menu(scanner, employees, clients, accounts, transactions, cards);
                         break;
                     }
                 }

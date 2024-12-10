@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Employee extends User {
-    private AuthorizationState authorization;
+    private AuthorizationState authorization = AuthorizationState.UNAUTHORIZED;
     private String address;
     private String position;
     private final String graduatedCollege;

@@ -25,14 +25,20 @@ public class Transaction {
         ++nextId;
     }
 
-    public Transaction(int id, String date, int clientId, int accountNumber, int employeeId, TransactionType transactionType, double amount, String cardNumber) {
+    public Transaction(int clientId, int accountNumber, String cardNumber, TransactionType transactionType, double amount) {
+        this.id = 400000 + nextId;
+        this.date = new Date();
+        this.clientId = clientId;
+        this.accountNumber = accountNumber;
+        this.cardNumber = cardNumber;
+        this.transactionType = transactionType;
+        this.amount = amount;
+        ++nextId;
+    }
+
+    public Transaction(int id, Date date, int clientId, int accountNumber, int employeeId, TransactionType transactionType, double amount, String cardNumber) {
         this.id = id;
-        try {
-            this.date = sdf.parse(date);
-        } catch (Exception e) {
-            System.out.println("Invalid date format: " + date + ". Setting to current date.");
-            this.date = new Date();
-        }
+        this.date = date;
         this.clientId = clientId;
         this.accountNumber = accountNumber;
         this.employeeId = employeeId;
@@ -42,16 +48,6 @@ public class Transaction {
         if (nextId < this.id - 399999) {
             nextId = this.id - 399999;
         }
-    }
-
-    public Transaction(int clientId, int accountNumber, String cardNumber, TransactionType transactionType, double amount) {
-        this.id = 400000 + nextId;
-        this.clientId = clientId;
-        this.accountNumber = accountNumber;
-        this.cardNumber = cardNumber;
-        this.transactionType = transactionType;
-        this.amount = amount;
-        nextId++;
     }
 
     public String details() {

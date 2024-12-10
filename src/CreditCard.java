@@ -4,7 +4,7 @@ public class CreditCard {
     private CardState cardState;
     private final Account linkedAccount;
     private final Client owner;
-    private final double availableCredits;
+    private double availableCredits;
     private double totalSpent;
 
     public CreditCard(String cardNumber, Account linkedAccount, Client owner, double availableCredits) {

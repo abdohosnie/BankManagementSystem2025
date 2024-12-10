@@ -1,5 +1,7 @@
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Database {
     private final String clientsFileName = "./database/clients.txt";
@@ -7,6 +9,8 @@ public class Database {
     private final String accountsFileName = "./database/accounts.txt";
     private final String transactionsFileName = "./database/transactions.txt";
     private final String cardsFileName = "./database/cards.txt";
+
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     public void clear(ArrayList<Client> clients, ArrayList<Employee> employees, ArrayList<Account> accounts, ArrayList<Transaction> transactions, ArrayList<CreditCard> cards) {
         clients.clear();
@@ -97,7 +101,7 @@ public class Database {
                 try {
                     String[] data = str.split(",");
                     int id = Integer.parseInt(data[0]);
-                    String date = data[1];
+                    Date date = sdf.parse(data[1]);
                     int clientId = Integer.parseInt(data[2]);
                     int accountNumber = Integer.parseInt(data[3]);
                     int employeeId = Integer.parseInt(data[4]);
@@ -212,7 +216,7 @@ public class Database {
         try (BufferedWriter transactionsFileWrite = new BufferedWriter(new FileWriter(transactionsFileName))) {
             for (Transaction transaction : transactions) {
                 String str = transaction.getId() + "," +
-                        transaction.getDate() + "," +
+                        sdf.format(transaction.getDate()) + "," +
                         transaction.getClientId() + "," +
                         transaction.getAccountNumber() + "," +
                         transaction.getEmployeeId() + "," +

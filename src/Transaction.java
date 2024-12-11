@@ -1,8 +1,7 @@
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Transaction {
-    protected int id;
+    protected int transactionId;
     protected Date date;
     protected int clientId;
     protected int accountNumber;
@@ -12,10 +11,8 @@ public class Transaction {
     protected double amount;
     public static int nextId = 0;
 
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
     public Transaction(int clientId, int accountNumber, int employeeId, TransactionType transactionType, double amount) {
-        this.id = 400000 + nextId;
+        this.transactionId = 400000 + nextId;
         this.date = new Date();
         this.clientId = clientId;
         this.accountNumber = accountNumber;
@@ -26,7 +23,7 @@ public class Transaction {
     }
 
     public Transaction(int clientId, int accountNumber, String cardNumber, TransactionType transactionType, double amount) {
-        this.id = 400000 + nextId;
+        this.transactionId = 400000 + nextId;
         this.date = new Date();
         this.clientId = clientId;
         this.accountNumber = accountNumber;
@@ -36,8 +33,8 @@ public class Transaction {
         ++nextId;
     }
 
-    public Transaction(int id, Date date, int clientId, int accountNumber, int employeeId, TransactionType transactionType, double amount, String cardNumber) {
-        this.id = id;
+    public Transaction(int transactionId, Date date, int clientId, int accountNumber, int employeeId, TransactionType transactionType, double amount, String cardNumber) {
+        this.transactionId = transactionId;
         this.date = date;
         this.clientId = clientId;
         this.accountNumber = accountNumber;
@@ -45,24 +42,24 @@ public class Transaction {
         this.transactionType = transactionType;
         this.amount = amount;
         this.cardNumber = cardNumber;
-        if (nextId < this.id - 399999) {
-            nextId = this.id - 399999;
+        if (nextId < this.transactionId - 399999) {
+            nextId = this.transactionId - 399999;
         }
     }
 
-    public String details() {
-        String str = "";
-        str = str + "Transaction ID: " + this.id + "\n";
-        str = str + "Date: " + this.date + "\n";
-        str = str + "Amount: " + this.amount + "\n";
-        str = str + "Transaction type: " + this.transactionType + "\n";
-        str = str + "Client ID: " + this.clientId + "\n";
-        str = str + "Account number: " + this.accountNumber + "\n";
-        return str;
+    @Override
+    public String toString() {
+        return "Transaction ID: " + this.transactionId + "\n" +
+                "Date: " + this.date + "\n" +
+                "Amount: " + this.amount + "\n" +
+                "Transaction type: " + this.transactionType + "\n" +
+                "Client ID: " + this.clientId + "\n" +
+                "Account number: " + this.accountNumber + "\n" +
+                '}';
     }
 
-    public int getId() {
-        return this.id;
+    public int getTransactionId() {
+        return this.transactionId;
     }
 
     public Date getDate() {

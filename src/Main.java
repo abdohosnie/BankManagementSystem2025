@@ -37,7 +37,7 @@ public class Main {
                 }
             }
             if (curId == 0) {
-                  admin.menu(scanner, employees, clients, accounts, transactions, cards);
+                admin.menu(scanner, employees, clients, accounts, transactions, cards);
             } else if (curId / 100000 == 2) {
                 for (Employee emp : employees) {
                     if (emp.getId() == curId) {

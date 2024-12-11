@@ -12,14 +12,6 @@ public class Database {
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-    public void clear(ArrayList<Client> clients, ArrayList<Employee> employees, ArrayList<Account> accounts, ArrayList<Transaction> transactions, ArrayList<CreditCard> cards) {
-        clients.clear();
-        employees.clear();
-        accounts.clear();
-        transactions.clear();
-        cards.clear();
-    }
-
     public void load(ArrayList<Client> clients, ArrayList<Employee> employees, ArrayList<Account> accounts, ArrayList<Transaction> transactions, ArrayList<CreditCard> cards) {
         try (BufferedReader clientsFile = new BufferedReader(new FileReader(clientsFileName))) {
             String str;
@@ -215,7 +207,7 @@ public class Database {
 
         try (BufferedWriter transactionsFileWrite = new BufferedWriter(new FileWriter(transactionsFileName))) {
             for (Transaction transaction : transactions) {
-                String str = transaction.getId() + "," +
+                String str = transaction.getTransactionId() + "," +
                         sdf.format(transaction.getDate()) + "," +
                         transaction.getClientId() + "," +
                         transaction.getAccountNumber() + "," +

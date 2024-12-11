@@ -1,4 +1,7 @@
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 public class Admin extends User {
@@ -6,12 +9,14 @@ public class Admin extends User {
         super(firstName, lastName, username, password, phoneNumber);
     }
 
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
     public static void AuthorizeEmployee(Scanner scanner, ArrayList<Employee> employees) {
         int id = 0;
         boolean pass = false;
         while (!pass) {
             try {
-                System.out.println("Enter employee id: ");
+                System.out.println("Enter employee Id: ");
                 id = Integer.parseInt(scanner.nextLine());
                 pass = true;
             } catch (NumberFormatException nfe) {
@@ -25,7 +30,7 @@ public class Admin extends User {
                 return;
             }
         }
-        System.out.println("Couldn't find employee with id: " + id);
+        System.out.println("Couldn't find employee with transactionId: " + id);
     }
 
     public static void AuthorizeAllEmployees(ArrayList<Employee> employees) {
@@ -40,20 +45,24 @@ public class Admin extends User {
         boolean pass = false;
         while (!pass) {
             try {
-                System.out.println("Enter client id: ");
+                System.out.println("Enter client transactionId: ");
                 id = Integer.parseInt(scanner.nextLine());
                 pass = true;
             } catch (NumberFormatException nfe) {
                 System.out.println("Invalid input. only integers are allowed.");
             }
         }
+        boolean exists = false;
         for (Client client : clients) {
             if (client.getId() == id) {
                 System.out.println(client.details());
-                return;
+                exists = true;
+                break;
             }
         }
-        System.out.println("Client doesn't exist!\n");
+        if (!exists) {
+            System.out.println("No client found with id: " + id);
+        }
     }
 
     public static void displayAllClients(ArrayList<Client> clients) {
@@ -67,19 +76,24 @@ public class Admin extends User {
         boolean pass = false;
         while (!pass) {
             try {
-                System.out.println("Enter employee id: ");
+                System.out.println("Enter employee Id: ");
                 id = Integer.parseInt(scanner.nextLine());
                 pass = true;
             } catch (NumberFormatException nfe) {
                 System.out.println("Invalid input. Only integers are allowed.");
             }
         }
+        boolean exists = false;
         for (Employee employee : employees) {
             if (employee.getId() == id) {
                 System.out.println(employee.details());
+                exists = true;
+                break;
             }
         }
-        System.out.println("Employee doesn't exist!\n");
+        if (!exists) {
+            System.out.println("No employee found with id: " + id);
+        }
     }
 
     public static void displayAllEmployees(ArrayList<Employee> employees) {
@@ -89,7 +103,7 @@ public class Admin extends User {
     }
 
     public static void displayTransactions(Scanner scanner, ArrayList<Transaction> transactions) {
-        System.out.println("1. All transactions\n2. Transactions on a specific date\n3. Transactions by a specific client\n4. Transactions by a specific employee\n5. Back");
+        System.out.println("1. All transactions\n2. Transactions on a specific date\n3. Transactions by a specific client\n5. Back");
         int i = 0;
         boolean pass = false;
         while (!pass) {
@@ -104,25 +118,35 @@ public class Admin extends User {
         if (i == 1) {
             if (!transactions.isEmpty()) {
                 for (Transaction transaction : transactions) {
-                    System.out.println(transaction.details());
+                    System.out.println(transaction);
                 }
             } else System.out.println("No transactions found!");
         } else if (i == 2) {
             System.out.println("Enter date (yyyy-MM-dd):");
-            String date = scanner.nextLine();
+            Date date;
+            try {
+                date = sdf.parse(scanner.nextLine());
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+            boolean exists = false;
             if (!transactions.isEmpty()) {
                 for (Transaction transaction : transactions) {
                     if (transaction.getDate().equals(date)) {
-                        System.out.println(transaction.details());
+                        System.out.println(transaction);
+                        exists = true;
                     }
                 }
-            } else System.out.println("No transactions found!");
+            }
+            if (!exists) {
+                System.out.println("No transactions found on date: " + date);
+            }
         } else if (i == 3) {
             int clientId = 0;
             pass = false;
             while (!pass) {
                 try {
-                    System.out.println("Enter client id:");
+                    System.out.println("Enter client transactionId:");
                     clientId = Integer.parseInt(scanner.nextLine());
                     pass = true;
                 } catch (NumberFormatException nfe) {
@@ -132,7 +156,7 @@ public class Admin extends User {
             boolean exists = false;
             for (Transaction transaction : transactions) {
                 if (transaction.getClientId() == clientId) {
-                    System.out.println(transaction.details());
+                    System.out.println(transaction);
                     exists = true;
                 }
             }
@@ -140,29 +164,8 @@ public class Admin extends User {
                 System.out.println("No transactions found!");
             }
         } else if (i == 4) {
-            int id = 0;
-            pass = false;
-            while (!pass) {
-                try {
-                    System.out.println("Enter employee id: ");
-                    id = Integer.parseInt(scanner.nextLine());
-                    pass = true;
-                } catch (NumberFormatException nfe) {
-                    System.out.println("Invalid input. Only Integers are allowed.");
-                }
-            }
-            boolean exists = false;
-            for (Transaction transaction : transactions) {
-                if (transaction.getEmployeeId() == id) {
-                    System.out.println(transaction.details());
-                    exists = true;
-                }
-            }
-            if (!exists) {
-                System.out.println("No transaction found!");
-            }
-        } else if (i == 5) return;
-        else System.out.println("Invalid input. Please try again!");
+            return;
+        } else System.out.println("Invalid input. Please try again!");
     }
 
     @Override

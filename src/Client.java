@@ -56,7 +56,7 @@ public class Client extends User {
             return;
         }
         String cardNumber = Generator.generateCardNumber();
-        CreditCard newCard = new CreditCard(cardNumber, linkedAccount, this, 20000);
+        CreditCard newCard = new CreditCard(cardNumber, linkedAccount, this);
         creditCards.add(newCard);
         cards.add(newCard);
         System.out.println("Credit card with number - " + cardNumber + " - has been issued and linked to account number: " + linkedAccount.getAccountNumber() + ".");
@@ -91,43 +91,43 @@ public class Client extends User {
 
     public void editPersonalInfo(Scanner scanner) {
         while (true) {
-            System.out.println("1. First name \n2. Last name\n3.phone number\n4.change password\n5. Back");
+            System.out.println("1. First name \n2. Last name\n3. Phone number\n4. Change password\n5. Back");
             int i = 0;
             boolean pass = false;
             while (!pass) {
                 try {
-                    i = Integer.parseInt(scanner.next());
+                    i = Integer.parseInt(scanner.nextLine());
                     pass = true;
                 } catch (NumberFormatException nfe) {
                     System.out.println("Invalid input. Only integers are allowed.");
                 }
             }
-            scanner.nextLine();
             if (i == 1) {
                 System.out.println("Enter new first name: ");
-                String newFirstName = scanner.next();
+                String newFirstName = scanner.nextLine();
                 this.setFirstName(newFirstName);
                 System.out.println("First name changed successfully!");
             } else if (i == 2) {
                 System.out.println("Enter new last name: ");
-                String newLastName = scanner.next();
+                String newLastName = scanner.nextLine();
                 this.setLastName(newLastName);
                 System.out.println("Last name changed successfully!");
             } else if (i == 3) {
                 System.out.println("Enter new phone number: ");
-                String newPhone = scanner.next();
+                String newPhone = scanner.nextLine();
                 this.setPhoneNumber(newPhone);
                 System.out.println("Phone number changed successfully!");
             } else if (i == 4) {
                 System.out.println("Enter old password: ");
-                String oldPassword = scanner.next();
+                String oldPassword = scanner.nextLine();
                 if (this.getPassword().equals(oldPassword)) {
                     System.out.println("Enter new password: ");
-                    String newPassword = scanner.next();
+                    String newPassword = scanner.nextLine();
                     System.out.println("ReEnter new password: ");
-                    String RenewPassword = scanner.next();
+                    String RenewPassword = scanner.nextLine();
                     if (newPassword.equals(RenewPassword)) {
                         this.setPassword(newPassword);
+                        System.out.println("Password changed successfully!");
                     } else {
                         System.out.println("New password doesn't match.");
                         return;
@@ -151,11 +151,9 @@ public class Client extends User {
                     System.out.println("Account Number: " + account.getAccountNumber());
                     System.out.println("Account Type: " + account.getAccountType());
                     System.out.println("Account Status: " + account.getAccountState());
-                    System.out.println("Balance: " + account.getBalance());
+                    System.out.println("Balance: " + account.getBalance() + " LE.");
                     if (account.getAccountType().getDescription().equals("Saving")) {
-                        System.out.println("Balance after 1 year: " + (account.getBalance() + (account.getBalance() * account.getAccountType().getInterestRate())));
-                    } else if (account.getAccountType().getDescription().equals("Current")) {
-                        System.out.println(" ");
+                        System.out.println("Balance after 1 year: " + (account.getBalance() + (account.getBalance() * account.getAccountType().getInterestRate())) + "\n");
                     }
                 }
             }
@@ -166,7 +164,7 @@ public class Client extends User {
         if (!transactions.isEmpty()) {
             for (Transaction transaction : transactions) {
                 if (transaction.clientId == this.getId()) {
-                    System.out.println(transaction.details());
+                    System.out.println(transaction);
                 }
             }
         } else System.out.println("No transactions found!");
@@ -192,7 +190,7 @@ public class Client extends User {
                 while (!pass) {
                     try {
                         System.out.println("Balance: ");
-                        balance = Double.parseDouble(scanner.next());
+                        balance = Double.parseDouble(scanner.nextLine());
                         pass = true;
                     } catch (NumberFormatException nfe) {
                         System.out.println("Invalid input. Only integers are allowed.");
@@ -208,14 +206,16 @@ public class Client extends User {
                     Account account = new Account(this.getId(), AccountState.ACTIVE, AccountType.CURRENT, balance);
                     accounts.add(account);
                     Client.updateTotalBalance(clients, accounts);
+                    System.out.println("New current account created successfully!\nAccount number: " + account.getAccountNumber() + ". \t" + "Balance: " + balance);
+                    return;
                 }
             } else if (i == 2) {
-                float balance = 0;
+                double balance = 0.0;
                 pass = false;
                 while (!pass) {
                     try {
                         System.out.println("Balance:");
-                        balance = Float.parseFloat(scanner.nextLine());
+                        balance = Double.parseDouble(scanner.nextLine());
                         pass = true;
                     } catch (NumberFormatException nfe) {
                         System.out.println("Invalid input. Only decimals are allowed.");
@@ -223,12 +223,13 @@ public class Client extends User {
                 }
                 if (balance < 0) {
                     System.out.println("Can't have negative balance");
-                    return;
                 } else {
                     Account account = new Account(this.getId(), AccountState.ACTIVE, AccountType.SAVING, balance);
                     accounts.add(account);
                     Client.updateTotalBalance(clients, accounts);
+                    System.out.println("New savings account created successfully!\nAccount number: " + account.getAccountNumber() + ". \t" + "Balance: " + balance);
                 }
+                return;
             } else if (i == 3) {
                 return;
             }
@@ -254,7 +255,7 @@ public class Client extends User {
                 while (!pass) {
                     try {
                         System.out.println("Account number: ");
-                        accNum = Integer.parseInt(scanner.next());
+                        accNum = Integer.parseInt(scanner.nextLine());
                         pass = true;
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid input! Only integers are allowed.");
@@ -265,7 +266,7 @@ public class Client extends User {
                 while (!pass) {
                     try {
                         System.out.println("Amount:");
-                        amount = Double.parseDouble(scanner.next());
+                        amount = Double.parseDouble(scanner.nextLine());
                         pass = true;
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid input! Only decimals are allowed.");
@@ -292,7 +293,7 @@ public class Client extends User {
                 while (!pass) {
                     try {
                         System.out.println("Account number:");
-                        accNum = Integer.parseInt(scanner.next());
+                        accNum = Integer.parseInt(scanner.nextLine());
                         pass = true;
                     } catch (NumberFormatException nfe) {
                         System.out.println("Invalid input! Only integers are allowed.");
@@ -303,7 +304,7 @@ public class Client extends User {
                 while (!pass) {
                     try {
                         System.out.println("Amount: ");
-                        amount = Double.parseDouble(scanner.next());
+                        amount = Double.parseDouble(scanner.nextLine());
                         pass = true;
                     } catch (NumberFormatException nfe) {
                         System.out.println("Invalid input! Only decimals are allowed.");
@@ -336,7 +337,7 @@ public class Client extends User {
                 while (!pass) {
                     try {
                         System.out.println("Account number to transfer from: ");
-                        accNum = Integer.parseInt(scanner.next());
+                        accNum = Integer.parseInt(scanner.nextLine());
                         pass = true;
                     } catch (NumberFormatException nfe) {
                         System.out.println("Invalid input. Only integers are allowed.");
@@ -347,7 +348,7 @@ public class Client extends User {
                 while (!pass) {
                     try {
                         System.out.println("Amount:");
-                        amount = Double.parseDouble(scanner.next());
+                        amount = Double.parseDouble(scanner.nextLine());
                         pass = true;
                     } catch (NumberFormatException nfe) {
                         System.out.println("Invalid input. Only decimals are allowed.");
@@ -368,7 +369,7 @@ public class Client extends User {
                         while (!pass) {
                             try {
                                 System.out.println("Account number to transfer to:");
-                                acc2Num = Integer.parseInt(scanner.next());
+                                acc2Num = Integer.parseInt(scanner.nextLine());
                                 pass = true;
                             } catch (NumberFormatException nfe) {
                                 System.out.println("Invalid input. Only integers are allowed.");
@@ -400,7 +401,7 @@ public class Client extends User {
                 }
 
                 System.out.println("Enter the credit card number: ");
-                String cardNumber = scanner.next();
+                String cardNumber = scanner.nextLine();
 
                 CreditCard selectedCard = null;
                 for (CreditCard card : creditCards) {
@@ -467,7 +468,7 @@ public class Client extends User {
         }
 
         System.out.print("Enter the card number to activate: ");
-        String cardNumber = scanner.next();
+        String cardNumber = scanner.nextLine();
 
         CreditCard selectedCard = Helper.findCardByNumber(cardNumber, creditCards);
         if (selectedCard == null) {
@@ -487,7 +488,7 @@ public class Client extends User {
         }
 
         System.out.print("Enter the card number to deactivate: ");
-        String cardNumber = scanner.next();
+        String cardNumber = scanner.nextLine();
 
         CreditCard selectedCard = Helper.findCardByNumber(cardNumber, creditCards);
         if (selectedCard == null) {
@@ -530,6 +531,7 @@ public class Client extends User {
     @Override
     public String details() {
         StringBuilder str = new StringBuilder(super.details());
+        str.append("Total balance: ").append(this.getBalance()).append('\n');
         str.append("Loyalty Points: ").append(this.getLoyaltyPoints()).append('\n');
         if (!creditCards.isEmpty()) {
             str.append("Credit Cards: " + '\n');

@@ -4,14 +4,12 @@ public class CreditCard {
     private CardState cardState;
     private final Account linkedAccount;
     private final Client owner;
-    private double availableCredits;
     private double totalSpent;
 
-    public CreditCard(String cardNumber, Account linkedAccount, Client owner, double availableCredits) {
+    public CreditCard(String cardNumber, Account linkedAccount, Client owner) {
         this.cardNumber = cardNumber;
         this.linkedAccount = linkedAccount;
         this.cardState = CardState.INACTIVE;
-        this.availableCredits = availableCredits;
         this.owner = owner;
         this.totalSpent = 0.0;
     }
@@ -21,7 +19,6 @@ public class CreditCard {
         this.cardState = cardState;
         this.linkedAccount = linkedAccount;
         this.owner = owner;
-        this.availableCredits = creditLimit - totalSpent;
         this.totalSpent = totalSpent;
     }
 

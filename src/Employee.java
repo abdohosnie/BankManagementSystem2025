@@ -193,7 +193,7 @@ public class Employee extends User {
         clients.add(client);
         Account account = new Account(client.getId(), AccountState.ACTIVE, AccountType.SAVING, balance);
         accounts.add(account);
-        System.out.println("The new client's id is: " + client.getId());
+        System.out.println("The new client's transactionId is: " + client.getId());
     }
 
     public void addNewClientAccount(Scanner scanner, ArrayList<Client> clients, ArrayList<Account> accounts) {
@@ -347,7 +347,7 @@ public class Employee extends User {
         for (Account account : accounts) {
             if (account.getAccountNumber() == accountNumber) {
                 while (true) {
-                    System.out.println("1. Activate account\n2. Deactivate account\n3. Back");
+                    System.out.println("1. Activate account\n2. Deactivate account\n3. Change account type\n4. Back");
                     int i = 0;
                     pass = false;
                     while (!pass) {
@@ -363,6 +363,8 @@ public class Employee extends User {
                     } else if (i == 2) {
                         account.deactivateAccount();
                     } else if (i == 3) {
+                        account.changeAccountType();
+                    } else if (i == 4) {
                         return;
                     } else
                         System.out.println("Invalid input. Try again!");
@@ -478,185 +480,11 @@ public class Employee extends User {
         System.out.println("Account doesn't exist.");
     }
 
-    public void makeNewTransaction(Scanner scanner, ArrayList<Client> clients, ArrayList<Account> accounts, ArrayList<Transaction> transactions) {
-        while (true) {
-            System.out.println("1. Deposit\n2. Withdraw\n3. Transfer\n4. Back");
-            int i = 0;
-            boolean pass = false;
-            while (!pass) {
-                try {
-                    i = Integer.parseInt(scanner.nextLine());
-                    pass = true;
-                } catch (NumberFormatException nfe) {
-                    System.out.println("Invalid input. Only integers are allowed.");
-                }
-            }
-            if (i == 1) {
-                int accountNumber = 0;
-                pass = false;
-                while (!pass) {
-                    try {
-                        System.out.println("Account number: ");
-                        accountNumber = Integer.parseInt(scanner.nextLine());
-                        pass = true;
-                    } catch (NumberFormatException nfe) {
-                        System.out.println("Invalid input. Only integers are allowed.");
-                    }
-                }
-                double amount = 0.0;
-                pass = false;
-                while (!pass) {
-                    try {
-                        System.out.println("Amount: ");
-                        amount = Double.parseDouble(scanner.nextLine());
-                        pass = true;
-                    } catch (NumberFormatException nfe) {
-                        System.out.println("Invalid input. Only decimals are allowed.");
-                    }
-                }
-                if (amount < 0.0) {
-                    System.out.println("Can't enter negative amount");
-                    return;
-                }
-                boolean exists = false;
-                for (Account account : accounts) {
-                    if (account.getAccountNumber() == accountNumber) {
-                        account.setBalance(account.getBalance() + amount);
-                        Transaction transaction = new Transaction(account.getClientId(), account.getAccountNumber(), this.getId(), TransactionType.DEPOSIT, amount);
-                        transactions.add(transaction);
-                        exists = true;
-                        Client.updateTotalBalance(clients, accounts);
-                        break;
-                    }
-                }
-                if (!exists) {
-                    System.out.println("Account doesn't exist.");
-                }
-            } else if (i == 2) {
-                int accountNumber = 0;
-                pass = false;
-                while (!pass) {
-                    try {
-                        System.out.println("Account number: ");
-                        accountNumber = Integer.parseInt(scanner.nextLine());
-                        pass = true;
-                    } catch (NumberFormatException nfe) {
-                        System.out.println("Invalid input. Only integers are allowed.");
-                    }
-                }
-                double amount = 0.0;
-                pass = false;
-                while (!pass) {
-                    try {
-                        System.out.println("Amount: ");
-                        amount = Float.parseFloat(scanner.nextLine());
-                        pass = true;
-                    } catch (NumberFormatException nfe) {
-                        System.out.println("Invalid input. Only decimals are allowed.");
-                    }
-                }
-                if (amount < 0.0) {
-                    System.out.println("Can't enter negative amount");
-                    return;
-                }
-                boolean exists = false;
-                for (Account account : accounts) {
-                    if (account.getAccountNumber() == accountNumber) {
-                        if (account.getBalance() < amount) {
-                            System.out.println("The account doesn't have enough money.\nBalance is:" + account.getBalance());
-                            return;
-                        }
-                        account.setBalance(account.getBalance() - amount);
-                        Transaction transaction = new Transaction(account.getClientId(), account.getAccountNumber(), this.getId(), TransactionType.WITHDRAWAL, amount);
-                        transactions.add(transaction);
-                        Client.updateTotalBalance(clients, accounts);
-                        exists = true;
-                        break;
-                    }
-                }
-                if (!exists) {
-                    System.out.println("Account doesn't exist.");
-                }
-            } else if (i == 3) {
-                int accountNumber = 0;
-                pass = false;
-                while (!pass) {
-                    try {
-                        System.out.println("Account number to transfer from:");
-                        accountNumber = Integer.parseInt(scanner.nextLine());
-                        pass = true;
-                    } catch (NumberFormatException nfe) {
-                        System.out.println("Invalid input. Only integers are allowed.");
-                    }
-                }
-                double amount = 0.0;
-                pass = false;
-                while (!pass) {
-                    try {
-                        System.out.println("Amount: ");
-                        amount = Double.parseDouble(scanner.nextLine());
-                        pass = true;
-                    } catch (NumberFormatException nfe) {
-                        System.out.println("Invalid input. Only decimals are allowed.");
-                    }
-                }
-                if (amount < 0.0) {
-                    System.out.println("Can't enter negative amount");
-                    return;
-                }
-                boolean exists = false;
-                for (Account account : accounts) {
-                    if (account.getAccountNumber() == accountNumber) {
-                        if (account.getBalance() < amount) {
-                            System.out.println("The account doesn't have enough money.\nBalance is:" + account.getBalance());
-                            return;
-                        }
-                        int secondAccountNumber = 0;
-                        pass = false;
-                        while (!pass) {
-                            try {
-                                System.out.println("Account number to transfer to:");
-                                secondAccountNumber = Integer.parseInt(scanner.nextLine());
-                                pass = true;
-                            } catch (NumberFormatException nfe) {
-                                System.out.println("Invalid input. Only integers are allowed.");
-                            }
-                        }
-                        boolean exists2 = false;
-                        for (Account secondAccount : accounts) {
-                            if (secondAccount.getAccountNumber() == secondAccountNumber) {
-                                account.withdraw(amount);
-                                secondAccount.deposit(amount);
-                                Transaction transaction = new Transaction(account.getClientId(), account.getAccountNumber(), this.getId(), TransactionType.TRANSFER, amount);
-                                Transaction transaction2 = new Transaction(secondAccount.getClientId(), secondAccount.getAccountNumber(), this.getId(), TransactionType.TRANSFER, amount);
-                                transactions.add(transaction);
-                                transactions.add(transaction2);
-                                Client.updateTotalBalance(clients, accounts);
-                                exists2 = true;
-                                break;
-                            }
-                        }
-                        if (!exists2) {
-                            System.out.println("Account doesn't exist.");
-                        }
-                        exists = true;
-                        break;
-                    }
-                }
-                if (!exists) {
-                    System.out.println("Account doesn't exist.");
-                }
-            } else if (i == 4) {
-                return;
-            }
-        }
-    }
-
     public void menu(Scanner scanner, ArrayList<Employee> employees, ArrayList<Client> clients, ArrayList<Account> accounts, ArrayList<Transaction> transactions, ArrayList<CreditCard> cards) {
         int i = 0;
         if (this.getAuthorization() == AuthorizationState.AUTHORIZED) {
             while (true) {
-                System.out.println("1. Edit personal info\n2. Add a new client\n3. Create a new account for an existing client\n4. Edit a client profile\n5. Edit a client account\n6. Find a client\n7. Close a client account\n8. Make a new transaction\n9. Logout");
+                System.out.println("1. Edit personal info\n2. Add a new client\n3. Create a new account for an existing client\n4. Edit a client profile\n5. Edit a client account\n6. Find a client\n7. Close a client account\n8. Logout");
                 boolean pass = false;
                 while (!pass) {
                     try {
@@ -665,25 +493,23 @@ public class Employee extends User {
                     } catch (NumberFormatException nfe) {
                         System.out.println("Invalid input. Only integers are allowed.");
                     }
-                }
-                if (i == 1) {
-                    this.editPersonalInfo(scanner);
-                } else if (i == 2) {
-                    this.addNewClient(scanner, clients, employees, accounts);
-                } else if (i == 3) {
-                    this.addNewClientAccount(scanner, clients, accounts);
-                } else if (i == 4) {
-                    this.editClientProfile(scanner, clients);
-                } else if (i == 5) {
-                    this.editClientAccount(scanner, accounts);
-                } else if (i == 6) {
-                    this.findClient(scanner, clients, accounts);
-                } else if (i == 7) {
-                    this.deleteClientAccount(scanner, accounts);
-                } else if (i == 8) {
-                    this.makeNewTransaction(scanner, clients, accounts, transactions);
-                } else if (i == 9) {
-                    return;
+                    if (i == 1) {
+                        this.editPersonalInfo(scanner);
+                    } else if (i == 2) {
+                        this.addNewClient(scanner, clients, employees, accounts);
+                    } else if (i == 3) {
+                        this.addNewClientAccount(scanner, clients, accounts);
+                    } else if (i == 4) {
+                        this.editClientProfile(scanner, clients);
+                    } else if (i == 5) {
+                        this.editClientAccount(scanner, accounts);
+                    } else if (i == 6) {
+                        this.findClient(scanner, clients, accounts);
+                    } else if (i == 7) {
+                        this.deleteClientAccount(scanner, accounts);
+                    } else if (i == 8) {
+                        return;
+                    }
                 }
             }
         } else {

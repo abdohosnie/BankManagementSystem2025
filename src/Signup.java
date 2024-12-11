@@ -99,13 +99,11 @@ public class Signup {
 
                 Client client = new Client(firstName, lastName, username, password, phoneNumber, balance);
                 clients.add(client);
-                Account account = new Account(client.getId(), AccountState.ACTIVE ,AccountType.CURRENT, balance);
+                Account account = new Account(client.getId(), AccountState.ACTIVE, AccountType.CURRENT, balance);
                 accounts.add(account);
                 System.out.println("Your id is: " + client.getId());
                 return;
-            }
-            else if (i == 2)
-            {
+            } else if (i == 2) {
                 System.out.println("First name:");
                 String firstName = scanner.nextLine();
                 System.out.println("Last name:");
@@ -118,16 +116,12 @@ public class Signup {
                 String passwordConfirm = scanner.nextLine();
                 String phoneNumber = "";
                 pass = false;
-                while (!pass)
-                {
-                    try
-                    {
+                while (!pass) {
+                    try {
                         System.out.println("Phone number:");
                         phoneNumber = scanner.nextLine();
                         pass = true;
-                    }
-                    catch (NumberFormatException nfe)
-                    {
+                    } catch (NumberFormatException nfe) {
                         System.out.println("Invalid input. Only integers are allowed.");
                     }
                 }
@@ -139,69 +133,54 @@ public class Signup {
                 String graduatedCollege = scanner.nextLine();
                 pass = false;
                 int yearOfGraduation = 0;
-                while (!pass)
-                {
-                    try
-                    {
+                while (!pass) {
+                    try {
                         System.out.println("Year of graduation:");
                         yearOfGraduation = Integer.parseInt(scanner.nextLine());
                         pass = true;
-                    }
-                    catch (NumberFormatException nfe)
-                    {
+                    } catch (NumberFormatException nfe) {
                         System.out.println("Invalid input. Only integers are allowed.");
                     }
                 }
                 System.out.println("College grade: ");
                 String collegeGrade = scanner.nextLine();
                 // Validations
-                if (username.isEmpty() || password.isEmpty())
-                {
+                if (username.isEmpty() || password.isEmpty()) {
                     System.out.println("Can't have an empty username or password");
                     return;
                 }
-                if (username.length() > 30)
-                {
+                if (username.length() > 30) {
                     System.out.println("Username is too long");
                     return;
                 }
                 boolean containsAlpha = false;
-                for (int j = 0; j < username.length(); j++)
-                {
-                    if ((username.charAt(j) >= 'a' && username.charAt(j) <= 'z') || (username.charAt(j) >= 'A' && username.charAt(j) <= 'Z'))
-                    {
+                for (int j = 0; j < username.length(); j++) {
+                    if ((username.charAt(j) >= 'a' && username.charAt(j) <= 'z') || (username.charAt(j) >= 'A' && username.charAt(j) <= 'Z')) {
                         containsAlpha = true;
                         break;
                     }
                 }
-                if (!containsAlpha)
-                {
+                if (!containsAlpha) {
                     System.out.println("Username must contain at least one alphabetical character");
                     return;
                 }
-                for (Client client : clients)
-                {
-                    if (client.getUsername().equals(username))
-                    {
+                for (Client client : clients) {
+                    if (client.getUsername().equals(username)) {
                         System.out.println("Username already exists");
                         return;
                     }
                 }
-                for (Employee employee : employees)
-                {
-                    if (employee.getUsername().equals(username))
-                    {
+                for (Employee employee : employees) {
+                    if (employee.getUsername().equals(username)) {
                         System.out.println("Username already exists");
                         return;
                     }
                 }
-                if (password.length() > 30)
-                {
+                if (password.length() > 30) {
                     System.out.println("Password is too long");
                     return;
                 }
-                if (!password.equals(passwordConfirm))
-                {
+                if (!password.equals(passwordConfirm)) {
                     System.out.println("Password doesn't match. Please try again.");
                     return;
                 }

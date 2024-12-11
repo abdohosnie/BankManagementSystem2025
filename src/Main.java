@@ -28,9 +28,9 @@ public class Main {
                     }
                 }
                 if (i == 1) {
-                    curId = Login.login(scanner, clients, employees);
+                    curId = Authentication.login(scanner, clients, employees);
                 } else if (i == 2) {
-                    Signup.signup(scanner, clients, employees, accounts);
+                    Authentication.signup(scanner, clients, employees, accounts);
                 }
                 if (i == -1 || curId != -1) {
                     break;

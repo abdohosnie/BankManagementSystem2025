@@ -84,7 +84,6 @@ public class Account {
         }
     }
 
-
     public AccountType getAccountType() {
         return accountType;
     }

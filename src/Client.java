@@ -7,14 +7,6 @@ public class Client extends User {
     private final ArrayList<CreditCard> creditCards;
     private double loyaltyPoints;
 
-    public void setBalance(double balance) {
-        this.balance = balance;
-    }
-
-    public double getBalance() {
-        return balance;
-    }
-
     public Client(String firstName, String lastName, String username, String password, String phoneNumber, double balance) {
         super(firstName, lastName, username, password, phoneNumber);
         this.setId(100000 + nextId);
@@ -33,6 +25,14 @@ public class Client extends User {
         if (nextId < this.getId() - 99999) {
             nextId = this.getId() - 99999;
         }
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public double getBalance() {
+        return balance;
     }
 
     public ArrayList<CreditCard> getCreditCards() {
@@ -55,7 +55,7 @@ public class Client extends User {
             System.out.println("No associated account found for this client.");
             return;
         }
-        String cardNumber = Generator.generateCardNumber();
+        String cardNumber = Helper.generateCardNumber();
         CreditCard newCard = new CreditCard(cardNumber, linkedAccount, this);
         creditCards.add(newCard);
         cards.add(newCard);
@@ -446,6 +446,33 @@ public class Client extends User {
         }
     }
 
+    public void manageCards(Scanner scanner, ArrayList<Account> accounts, ArrayList<CreditCard> cards) {
+        while (true) {
+            System.out.println("\nCard Management\n1. View cards\n2. Request a new credit card\n3. Activate a credit card\n4. Deactivate a credit card\n5. Back to main menu");
+            int i = 0;
+            boolean pass = false;
+            while (!pass) {
+                try {
+                    i = Integer.parseInt(scanner.nextLine());
+                    pass = true;
+                } catch (NumberFormatException nfe) {
+                    System.out.println("Invalid input. Only integers are allowed.");
+                }
+            }
+            if (i == 1) {
+                this.viewCards();
+            } else if (i == 2) {
+                this.requestCreditCard(accounts, cards);
+            } else if (i == 3) {
+                this.activateCard(scanner);
+            } else if (i == 4) {
+                this.deactivateCard(scanner);
+            } else if (i == 5) {
+                return;
+            } else System.out.println("Invalid choice. Please try again.");
+        }
+    }
+
     private void viewCards() {
         if (this.creditCards.isEmpty()) {
             System.out.println("You don't have any credit cards.");
@@ -498,33 +525,6 @@ public class Client extends User {
         } else {
             selectedCard.deactivateCard();
             System.out.println("Credit card " + cardNumber + " has been deactivated successfully!");
-        }
-    }
-
-    public void manageCards(Scanner scanner, ArrayList<Account> accounts, ArrayList<CreditCard> cards) {
-        while (true) {
-            System.out.println("\nCard Management\n1. View cards\n2. Request a new credit card\n3. Activate a credit card\n4. Deactivate a credit card\n5. Back to main menu");
-            int i = 0;
-            boolean pass = false;
-            while (!pass) {
-                try {
-                    i = Integer.parseInt(scanner.nextLine());
-                    pass = true;
-                } catch (NumberFormatException nfe) {
-                    System.out.println("Invalid input. Only integers are allowed.");
-                }
-            }
-            if (i == 1) {
-                this.viewCards();
-            } else if (i == 2) {
-                this.requestCreditCard(accounts, cards);
-            } else if (i == 3) {
-                this.activateCard(scanner);
-            } else if (i == 4) {
-                this.deactivateCard(scanner);
-            } else if (i == 5) {
-                return;
-            } else System.out.println("Invalid choice. Please try again.");
         }
     }
 

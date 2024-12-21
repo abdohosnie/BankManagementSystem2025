@@ -6,17 +6,15 @@ public class Transaction {
     protected int clientId;
     protected int accountNumber;
     private String cardNumber;
-    protected int employeeId;
     protected TransactionType transactionType;
     protected double amount;
     public static int nextId = 0;
 
-    public Transaction(int clientId, int accountNumber, int employeeId, TransactionType transactionType, double amount) {
+    public Transaction(int clientId, int accountNumber, TransactionType transactionType, double amount) {
         this.transactionId = 400000 + nextId;
         this.date = new Date();
         this.clientId = clientId;
         this.accountNumber = accountNumber;
-        this.employeeId = employeeId;
         this.transactionType = transactionType;
         this.amount = amount;
         ++nextId;
@@ -33,12 +31,11 @@ public class Transaction {
         ++nextId;
     }
 
-    public Transaction(int transactionId, Date date, int clientId, int accountNumber, int employeeId, TransactionType transactionType, double amount, String cardNumber) {
+    public Transaction(int transactionId, Date date, int clientId, int accountNumber, TransactionType transactionType, double amount, String cardNumber) {
         this.transactionId = transactionId;
         this.date = date;
         this.clientId = clientId;
         this.accountNumber = accountNumber;
-        this.employeeId = employeeId;
         this.transactionType = transactionType;
         this.amount = amount;
         this.cardNumber = cardNumber;
@@ -54,8 +51,7 @@ public class Transaction {
                 "Amount: " + this.amount + "\n" +
                 "Transaction type: " + this.transactionType + "\n" +
                 "Client ID: " + this.clientId + "\n" +
-                "Account number: " + this.accountNumber + "\n" +
-                '}';
+                "Account number: " + this.accountNumber + "\n";
     }
 
     public int getTransactionId() {
@@ -72,10 +68,6 @@ public class Transaction {
 
     public int getAccountNumber() {
         return this.accountNumber;
-    }
-
-    public int getEmployeeId() {
-        return this.employeeId;
     }
 
     public TransactionType getTransactionType() {

@@ -1,6 +1,6 @@
+import javax.security.auth.login.AccountNotFoundException;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 
 public class Helper {
 
@@ -10,6 +10,7 @@ public class Helper {
                 return account;
             }
         }
+        System.out.println("Account was not found!");
         return null;
     }
 
@@ -19,6 +20,17 @@ public class Helper {
                 return client;
             }
         }
+        System.out.println("Client was not found!");
+        return null;
+    }
+
+    public static Client findClientById(int ownerId, ArrayList<Client> clients) {
+        for (Client client : clients) {
+            if (client.getId() == ownerId) {
+                return client;
+            }
+        }
+        System.out.println("Client was not found!");
         return null;
     }
 
@@ -28,6 +40,7 @@ public class Helper {
                 return card;
             }
         }
+        System.out.println("Card was not found!");
         return null;
     }
 

@@ -78,6 +78,11 @@ public class Database {
 
                     Account account = new Account(accountNumber, clientId, accountType, accountState, balance);
                     accounts.add(account);
+
+                    Client client = Helper.findClientById(clientId, clients);
+                    assert client != null;
+                    client.getClientAccounts().add(account);
+
                 } catch (Exception e) {
                     System.out.println("Invalid data format in line: " + str + ". Skipping this record.");
                 }
@@ -96,12 +101,11 @@ public class Database {
                     Date date = sdf.parse(data[1]);
                     int clientId = Integer.parseInt(data[2]);
                     int accountNumber = Integer.parseInt(data[3]);
-                    int employeeId = Integer.parseInt(data[4]);
-                    TransactionType transactionType = TransactionType.values()[Integer.parseInt(data[5])];
-                    double amount = Double.parseDouble(data[6]);
-                    String cardNumber = data[7];
+                    TransactionType transactionType = TransactionType.values()[Integer.parseInt(data[4])];
+                    double amount = Double.parseDouble(data[5]);
+                    String cardNumber = data[6];
 
-                    Transaction transaction = new Transaction(id, date, clientId, accountNumber, employeeId, transactionType, amount, cardNumber);
+                    Transaction transaction = new Transaction(id, date, clientId, accountNumber, transactionType, amount, cardNumber);
                     transactions.add(transaction);
                 } catch (Exception e) {
                     System.out.println("Invalid data format in line: " + str + ". Skipping this record.");
@@ -211,7 +215,6 @@ public class Database {
                         sdf.format(transaction.getDate()) + "," +
                         transaction.getClientId() + "," +
                         transaction.getAccountNumber() + "," +
-                        transaction.getEmployeeId() + "," +
                         transaction.getTransactionType().ordinal() + "," +
                         transaction.getAmount() + "," +
                         (transaction.getCardNumber() == null ? "null" : transaction.getCardNumber());

@@ -193,7 +193,7 @@ public class Employee extends User {
         clients.add(client);
         Account account = new Account(client.getId(), AccountState.ACTIVE, AccountType.SAVING, balance);
         accounts.add(account);
-        System.out.println("The new client's transactionId is: " + client.getId());
+        System.out.println("The new client's Id is: " + client.getId());
     }
 
     public void addNewClientAccount(Scanner scanner, ArrayList<Client> clients, ArrayList<Account> accounts) {

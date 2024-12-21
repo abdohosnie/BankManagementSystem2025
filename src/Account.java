@@ -97,6 +97,10 @@ public class Account {
     }
 
     public void deposit(double amount) {
+        if (accountState != AccountState.ACTIVE) {
+            System.out.println("Transaction failed. Account is inactive.");
+            return;
+        }
         if (amount > 0) {
             balance += amount;
             System.out.println("Deposited: " + amount + " LE. to account: " + accountNumber);
@@ -106,6 +110,10 @@ public class Account {
     }
 
     public void withdraw(double amount) {
+        if (accountState != AccountState.ACTIVE) {
+            System.out.println("Transaction failed. Account is inactive.");
+            return;
+        }
         if (amount > 0) {
             if (balance >= amount) {
                 balance -= amount;

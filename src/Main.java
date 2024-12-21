@@ -8,7 +8,6 @@ public class Main {
         ArrayList<Account> accounts = new ArrayList<>();
         ArrayList<Transaction> transactions = new ArrayList<>();
         ArrayList<CreditCard> cards = new ArrayList<>();
-        Admin admin = new Admin("Admin", "", "admin", "admin", "");
         Database database = new Database();
         database.load(clients, employees, accounts, transactions, cards);
         Scanner scanner = new Scanner(System.in);
@@ -28,48 +27,37 @@ public class Main {
                     }
                 }
                 if (i == 1) {
-                    curId = Authentication.login(scanner, clients, employees);
+                    User user = Authentication.login(scanner, clients, employees);
+                    if (user != null) {
+                        if (user instanceof Admin adminUser) {
+                            adminUser.menu(scanner, employees, clients, accounts, transactions, cards);
+                        } else if (user instanceof Client client) {
+                            client.menu(scanner, employees, clients, accounts, transactions, cards);
+                        } else if (user instanceof Employee employee) {
+                            employee.menu(scanner, employees, clients, accounts, transactions, cards);
+                        }
+                    }
                 } else if (i == 2) {
                     Authentication.signup(scanner, clients, employees, accounts);
                 }
-                if (i == -1 || curId != -1) {
+                if (i == -1) {
                     break;
                 }
             }
-            if (curId == 0) {
-                admin.menu(scanner, employees, clients, accounts, transactions, cards);
-            } else if (curId / 100000 == 2) {
-                for (Employee emp : employees) {
-                    if (emp.getId() == curId) {
-                        emp.menu(scanner, employees, clients, accounts, transactions, cards);
-                        break;
-                    }
+            while (true) {
+                System.out.println("Save changes to the database (y/n)?");
+                String c;
+                c = scanner.nextLine();
+                if (c.equalsIgnoreCase("y")) {
+                    database.save(clients, employees, accounts, transactions, cards);
+                    System.out.println("Changes where saved successfully.");
+                    return;
+                } else if (c.equalsIgnoreCase("n")) {
+                    System.out.println("Changes were not saved.");
+                    return;
+                } else {
+                    System.out.println("Type y for yes or n for no.");
                 }
-            } else if (curId / 100000 == 1) {
-                for (Client client : clients) {
-                    if (client.getId() == curId) {
-                        client.menu(scanner, employees, clients, accounts, transactions, cards);
-                        break;
-                    }
-                }
-            }
-            if (i == -1) {
-                break;
-            }
-        }
-        while (true) {
-            System.out.println("Save changes to the database (y/n)?");
-            String c;
-            c = scanner.nextLine();
-            if (c.equalsIgnoreCase("y")) {
-                database.save(clients, employees, accounts, transactions, cards);
-                System.out.println("Changes where saved successfully.");
-                return;
-            } else if (c.equalsIgnoreCase("n")) {
-                System.out.println("Changes were not saved.");
-                return;
-            } else {
-                System.out.println("Type y for yes or n for no.");
             }
         }
     }

@@ -30,7 +30,7 @@ public class Admin extends User {
                 return;
             }
         }
-        System.out.println("Couldn't find employee with transactionId: " + id);
+        System.out.println("Couldn't find employee with Id: " + id);
     }
 
     public static void AuthorizeAllEmployees(ArrayList<Employee> employees) {
@@ -45,7 +45,7 @@ public class Admin extends User {
         boolean pass = false;
         while (!pass) {
             try {
-                System.out.println("Enter client transactionId: ");
+                System.out.println("Enter client Id: ");
                 id = Integer.parseInt(scanner.nextLine());
                 pass = true;
             } catch (NumberFormatException nfe) {
@@ -103,7 +103,7 @@ public class Admin extends User {
     }
 
     public static void displayTransactions(Scanner scanner, ArrayList<Transaction> transactions) {
-        System.out.println("1. All transactions\n2. Transactions on a specific date\n3. Transactions by a specific client\n5. Back");
+        System.out.println("1. All transactions\n2. Transactions on a specific date\n3. Transactions by a specific client\n4. Back");
         int i = 0;
         boolean pass = false;
         while (!pass) {
@@ -146,7 +146,7 @@ public class Admin extends User {
             pass = false;
             while (!pass) {
                 try {
-                    System.out.println("Enter client transactionId:");
+                    System.out.println("Enter client Id:");
                     clientId = Integer.parseInt(scanner.nextLine());
                     pass = true;
                 } catch (NumberFormatException nfe) {

@@ -5,12 +5,14 @@ public class Client extends User {
     private double balance; // total balance among all accounts
     public static int nextId = 0;
     private final ArrayList<CreditCard> creditCards;
+    private final ArrayList<Account> clientAccounts;
     private double loyaltyPoints;
 
     public Client(String firstName, String lastName, String username, String password, String phoneNumber, double balance) {
         super(firstName, lastName, username, password, phoneNumber);
         this.setId(100000 + nextId);
         this.creditCards = new ArrayList<>();
+        this.clientAccounts = new ArrayList<>();
         this.loyaltyPoints = 0;
         this.balance = balance;
         nextId++;
@@ -20,6 +22,7 @@ public class Client extends User {
         super(firstName, lastName, username, password, phoneNumber);
         this.setId(id);
         this.creditCards = new ArrayList<>();
+        this.clientAccounts = new ArrayList<>();
         this.balance = balance;
         this.loyaltyPoints = loyaltyPoints;
         if (nextId < this.getId() - 99999) {
@@ -37,6 +40,10 @@ public class Client extends User {
 
     public ArrayList<CreditCard> getCreditCards() {
         return creditCards;
+    }
+
+    public ArrayList<Account> getClientAccounts() {
+        return clientAccounts;
     }
 
     public double getLoyaltyPoints() {
@@ -142,16 +149,16 @@ public class Client extends User {
         }
     }
 
-    public void displayAccounts(ArrayList<Account> accounts) {
-        if (accounts.isEmpty()) {
+    public void displayAccounts(ArrayList<Account> clientAccounts) {
+        if (clientAccounts.isEmpty()) {
             System.out.println("No accounts found.");
         } else {
-            for (Account account : accounts) {
+            for (Account account : clientAccounts) {
                 if (account.getClientId() == this.getId()) {
                     System.out.println("Account Number: " + account.getAccountNumber());
                     System.out.println("Account Type: " + account.getAccountType());
                     System.out.println("Account Status: " + account.getAccountState());
-                    System.out.println("Balance: " + account.getBalance() + " LE.");
+                    System.out.println("Balance: " + account.getBalance() + " LE.\n");
                     if (account.getAccountType().getDescription().equals("Saving")) {
                         System.out.println("Balance after 1 year: " + (account.getBalance() + (account.getBalance() * account.getAccountType().getInterestRate())) + "\n");
                     }
@@ -250,12 +257,12 @@ public class Client extends User {
                 }
             }
             if (i == 1) {
-                int accNum = 0;
+                int accountNumber = 0;
                 pass = false;
                 while (!pass) {
                     try {
                         System.out.println("Account number: ");
-                        accNum = Integer.parseInt(scanner.nextLine());
+                        accountNumber = Integer.parseInt(scanner.nextLine());
                         pass = true;
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid input! Only integers are allowed.");
@@ -274,26 +281,20 @@ public class Client extends User {
                     if (amount < 0.0) {
                         System.out.println("Can't enter negative numbers.");
                     }
-                    for (Account account : accounts) {
-                        if (account.getAccountNumber() == accNum) {
-                            account.deposit(amount);
-                            Transaction transaction = new Transaction(account.getClientId(), account.getAccountNumber(), 0, TransactionType.DEPOSIT, amount);
-                            transactions.add(transaction);
-                            Client.updateTotalBalance(clients, accounts);
-                            break;
-                        } else {
-                            System.out.println("Account doesn't exist!");
-                            return;
-                        }
-                    }
+                    Account account = Helper.findAccountByNumber(accountNumber, accounts);
+                    assert account != null;
+                    account.deposit(amount);
+                    Transaction transaction = new Transaction(account.getClientId(), account.getAccountNumber(), TransactionType.DEPOSIT, amount);
+                    transactions.add(transaction);
+                    Client.updateTotalBalance(clients, accounts);
                 }
             } else if (i == 2) {
-                int accNum = 0;
+                int accountNumber = 0;
                 pass = false;
                 while (!pass) {
                     try {
                         System.out.println("Account number:");
-                        accNum = Integer.parseInt(scanner.nextLine());
+                        accountNumber = Integer.parseInt(scanner.nextLine());
                         pass = true;
                     } catch (NumberFormatException nfe) {
                         System.out.println("Invalid input! Only integers are allowed.");
@@ -311,33 +312,28 @@ public class Client extends User {
                     }
                 }
                 if (amount < 0.0) {
-                    System.out.println("Can't enter negative amount");
+                    System.out.println("Can't enter negative amount.");
                     return;
                 }
-                for (Account account : accounts) {
-                    if (account.getAccountNumber() == accNum) {
-                        if (account.getBalance() < amount) {
-                            System.out.println("The account doesn't have enough money.\nBalance is:" + account.getBalance());
-                            return;
-                        } else {
-                            account.withdraw(amount);
-                            Transaction transaction = new Transaction(account.getClientId(), account.getAccountNumber(), 0, TransactionType.WITHDRAWAL, amount);
-                            transactions.add(transaction);
-                            Client.updateTotalBalance(clients, accounts);
-                            break;
-                        }
-                    } else {
-                        System.out.println("Account doesn't exist!");
-                        return;
-                    }
+                Account account = Helper.findAccountByNumber(accountNumber, clientAccounts);
+                assert account != null;
+                if (account.getBalance() < amount) {
+                    System.out.println("The account doesn't have enough money.\nBalance is:" + account.getBalance());
+                    return;
+                } else {
+                    account.withdraw(amount);
+                    Transaction transaction = new Transaction(account.getClientId(), account.getAccountNumber(), TransactionType.WITHDRAWAL, amount);
+                    transactions.add(transaction);
+                    Client.updateTotalBalance(clients, accounts);
+                    break;
                 }
             } else if (i == 3) {
-                int accNum = 0;
+                int accountNumber = 0;
                 pass = false;
                 while (!pass) {
                     try {
                         System.out.println("Account number to transfer from: ");
-                        accNum = Integer.parseInt(scanner.nextLine());
+                        accountNumber = Integer.parseInt(scanner.nextLine());
                         pass = true;
                     } catch (NumberFormatException nfe) {
                         System.out.println("Invalid input. Only integers are allowed.");
@@ -358,42 +354,33 @@ public class Client extends User {
                     System.out.println("Can't enter negative amount!");
                     return;
                 }
-                for (Account account : accounts) {
-                    if (account.getAccountNumber() == accNum) {
-                        if (account.getBalance() < amount) {
-                            System.out.println("This account doesn't have enough money!\nBalance is: " + account.getBalance());
-                            return;
-                        }
-                        int acc2Num = 0;
-                        pass = false;
-                        while (!pass) {
-                            try {
-                                System.out.println("Account number to transfer to:");
-                                acc2Num = Integer.parseInt(scanner.nextLine());
-                                pass = true;
-                            } catch (NumberFormatException nfe) {
-                                System.out.println("Invalid input. Only integers are allowed.");
-                            }
-                        }
-                        boolean exists2 = false;
-                        for (Account account2 : accounts) {
-                            if (account2.getAccountNumber() == acc2Num) {
-                                account.withdraw(amount);
-                                account2.deposit(amount);
-                                Transaction transaction = new Transaction(account.getClientId(), account.getAccountNumber(), 0, TransactionType.TRANSFER, amount);
-                                Transaction transaction2 = new Transaction(account2.getClientId(), account2.getAccountNumber(), 0, TransactionType.TRANSFER, amount);
-                                transactions.add(transaction);
-                                transactions.add(transaction2);
-                                Client.updateTotalBalance(clients, accounts);
-                                exists2 = true;
-                                break;
-                            }
-                        }
-                        if (!exists2) {
-                            System.out.println("Receiver's account doesn't exist!");
-                        }
+
+                Account account = Helper.findAccountByNumber(accountNumber, clientAccounts);
+                assert account != null;
+                if (account.getBalance() < amount) {
+                    System.out.println("This account doesn't have enough money!\nBalance is: " + account.getBalance());
+                    return;
+                }
+                int secondAccountNumber = 0;
+                pass = false;
+                while (!pass) {
+                    try {
+                        System.out.println("Account number to transfer to:");
+                        secondAccountNumber = Integer.parseInt(scanner.nextLine());
+                        pass = true;
+                    } catch (NumberFormatException nfe) {
+                        System.out.println("Invalid input. Only integers are allowed.");
                     }
                 }
+                Account secondAccount = Helper.findAccountByNumber(secondAccountNumber, accounts);
+                account.withdraw(amount);
+                assert secondAccount != null;
+                secondAccount.deposit(amount);
+                Transaction transaction = new Transaction(account.getClientId(), account.getAccountNumber(), TransactionType.TRANSFER, amount);
+                Transaction transaction2 = new Transaction(secondAccount.getClientId(), secondAccount.getAccountNumber(), TransactionType.TRANSFER, amount);
+                transactions.add(transaction);
+                transactions.add(transaction2);
+                Client.updateTotalBalance(clients, accounts);
             } else if (i == 4) {
                 if (this.creditCards.isEmpty()) {
                     System.out.println("You don't have any credit cards. Please request one first.");

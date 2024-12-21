@@ -192,36 +192,32 @@ public class Authentication {
         }
     }
 
-    public static int login(Scanner scanner, ArrayList<Client> clients, ArrayList<Employee> employees) {
+    public static User login(Scanner scanner, ArrayList<Client> clients, ArrayList<Employee> employees) {
         System.out.print("Username: ");
-        String username = scanner.nextLine().trim(); // Trim to remove extra spaces
+        String username = scanner.nextLine();
         System.out.print("Password: ");
         String password = scanner.nextLine();
 
-        if (isAdmin(username, password)) {
+        if (username.equals("admin") && password.equals("admin")) {
             System.out.println("Admin logged in successfully!");
-            return 0;
+            return new Admin("Admin", "", "admin", "admin", "");
         }
 
         for (Employee employee : employees) {
             if (employee.getUsername().equals(username) && employee.getPassword().equals(password)) {
-                System.out.println("Employee logged in successfully!");
-                return employee.getId();
+                System.out.println("Employee logged in successfully!\n");
+                return employee;
             }
         }
 
         for (Client client : clients) {
             if (client.getUsername().equals(username) && client.getPassword().equals(password)) {
                 System.out.println("Client logged in successfully!");
-                return client.getId();
+                return client;
             }
         }
 
         System.out.println("Invalid username or password. Please try again.");
-        return -1;
-    }
-
-    private static boolean isAdmin(String username, String password) {
-        return username.equalsIgnoreCase("admin") && password.equals("admin");
+        return null;
     }
 }

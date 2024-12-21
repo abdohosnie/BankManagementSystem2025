@@ -14,7 +14,6 @@ public class Main {
 
         int i = 0;
         while (true) {
-            int curId = -1;
             while (true) {
                 System.out.println("\n1. Login\n2. Signup\n-1. Exit");
                 boolean pass = false;
@@ -29,11 +28,17 @@ public class Main {
                 if (i == 1) {
                     User user = Authentication.login(scanner, clients, employees);
                     if (user != null) {
-                        if (user instanceof Admin adminUser) {
-                            adminUser.menu(scanner, employees, clients, accounts, transactions, cards);
-                        } else if (user instanceof Client client) {
+                        if (user instanceof Admin) {
+                            Admin admin;
+                            admin = (Admin) user;
+                            admin.menu(scanner, employees, clients, accounts, transactions, cards);
+                        } else if (user instanceof Client) {
+                            Client client;
+                            client = (Client) user;
                             client.menu(scanner, employees, clients, accounts, transactions, cards);
-                        } else if (user instanceof Employee employee) {
+                        } else if (user instanceof Employee) {
+                            Employee employee;
+                            employee = (Employee) user;
                             employee.menu(scanner, employees, clients, accounts, transactions, cards);
                         }
                     }

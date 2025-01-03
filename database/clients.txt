@@ -1,5 +1,7 @@
-100000,Abdo,Hosnie,abdohosnie,123,123,8401.0,50.0
+100000,Abdo,Hosnie,abdohosnie,123,123,15024.0,50.0
 100001,Hosnie,Hosnie,hosnie,123,123,500000.0,0.0
 100002,John,Doe,john,123,123,5000.0,0.0
 100003,Mike,Lee,mike,123,123,10000.0,0.0
-100004,Jane,Roe,jane,123,123,80000.0,0.0
+100004,Jane,Roe,jane,123,123,3877.0,0.0
+100005,abdelaziz,mohamed,dark,123,467558,20000.0,0.0
+100006,aliaa,ali,alyaa,123,123,3000.0,50.0

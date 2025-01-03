@@ -474,6 +474,7 @@ public class Employee extends User {
         for (Account account : accounts) {
             if (account.getAccountNumber() == accountNumber) {
                 accounts.remove(account);
+                System.out.println("Account has been deleted!\n");
                 return;
             }
         }

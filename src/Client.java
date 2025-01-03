@@ -212,6 +212,7 @@ public class Client extends User {
                 } else {
                     Account account = new Account(this.getId(), AccountState.ACTIVE, AccountType.CURRENT, balance);
                     accounts.add(account);
+                    clientAccounts.add(account);
                     Client.updateTotalBalance(clients, accounts);
                     System.out.println("New current account created successfully!\nAccount number: " + account.getAccountNumber() + ". \t" + "Balance: " + balance);
                     return;
@@ -233,6 +234,7 @@ public class Client extends User {
                 } else {
                     Account account = new Account(this.getId(), AccountState.ACTIVE, AccountType.SAVING, balance);
                     accounts.add(account);
+                    clientAccounts.add(account);
                     Client.updateTotalBalance(clients, accounts);
                     System.out.println("New savings account created successfully!\nAccount number: " + account.getAccountNumber() + ". \t" + "Balance: " + balance);
                 }
@@ -282,11 +284,12 @@ public class Client extends User {
                         System.out.println("Can't enter negative numbers.");
                     }
                     Account account = Helper.findAccountByNumber(accountNumber, accounts);
-                    assert account != null;
-                    account.deposit(amount);
-                    Transaction transaction = new Transaction(account.getClientId(), account.getAccountNumber(), TransactionType.DEPOSIT, amount);
-                    transactions.add(transaction);
-                    Client.updateTotalBalance(clients, accounts);
+                    if (account != null) {
+                        account.deposit(amount);
+                        Transaction transaction = new Transaction(account.getClientId(), account.getAccountNumber(), TransactionType.DEPOSIT, amount);
+                        transactions.add(transaction);
+                        Client.updateTotalBalance(clients, accounts);
+                    } else return;
                 }
             } else if (i == 2) {
                 int accountNumber = 0;
@@ -316,17 +319,20 @@ public class Client extends User {
                     return;
                 }
                 Account account = Helper.findAccountByNumber(accountNumber, clientAccounts);
-                assert account != null;
-                if (account.getBalance() < amount) {
-                    System.out.println("The account doesn't have enough money.\nBalance is:" + account.getBalance());
-                    return;
-                } else {
-                    account.withdraw(amount);
-                    Transaction transaction = new Transaction(account.getClientId(), account.getAccountNumber(), TransactionType.WITHDRAWAL, amount);
-                    transactions.add(transaction);
-                    Client.updateTotalBalance(clients, accounts);
-                    break;
-                }
+                if (account != null) {
+
+                    if (account.getBalance() < amount) {
+                        System.out.println("The account doesn't have enough money.\nBalance is:" + account.getBalance());
+                        return;
+                    } else {
+                        account.withdraw(amount);
+                        Transaction transaction = new Transaction(account.getClientId(), account.getAccountNumber(), TransactionType.WITHDRAWAL, amount);
+                        transactions.add(transaction);
+                        Client.updateTotalBalance(clients, accounts);
+                        break;
+                    }
+                } else return;
+
             } else if (i == 3) {
                 int accountNumber = 0;
                 pass = false;
@@ -356,11 +362,12 @@ public class Client extends User {
                 }
 
                 Account account = Helper.findAccountByNumber(accountNumber, clientAccounts);
-                assert account != null;
-                if (account.getBalance() < amount) {
-                    System.out.println("This account doesn't have enough money!\nBalance is: " + account.getBalance());
-                    return;
-                }
+                if (account != null) {
+                    if (account.getBalance() < amount) {
+                        System.out.println("This account doesn't have enough money!\nBalance is: " + account.getBalance());
+                        return;
+                    }
+                } else return;
                 int secondAccountNumber = 0;
                 pass = false;
                 while (!pass) {
@@ -373,14 +380,15 @@ public class Client extends User {
                     }
                 }
                 Account secondAccount = Helper.findAccountByNumber(secondAccountNumber, accounts);
-                account.withdraw(amount);
-                assert secondAccount != null;
-                secondAccount.deposit(amount);
-                Transaction transaction = new Transaction(account.getClientId(), account.getAccountNumber(), TransactionType.TRANSFER, amount);
-                Transaction transaction2 = new Transaction(secondAccount.getClientId(), secondAccount.getAccountNumber(), TransactionType.TRANSFER, amount);
-                transactions.add(transaction);
-                transactions.add(transaction2);
-                Client.updateTotalBalance(clients, accounts);
+                if (secondAccount != null) {
+                    account.withdraw(amount);
+                    secondAccount.deposit(amount);
+                    Transaction transaction = new Transaction(account.getClientId(), account.getAccountNumber(), TransactionType.TRANSFER, amount);
+                    Transaction transaction2 = new Transaction(secondAccount.getClientId(), secondAccount.getAccountNumber(), TransactionType.TRANSFER, amount);
+                    transactions.add(transaction);
+                    transactions.add(transaction2);
+                    Client.updateTotalBalance(clients, accounts);
+                }
             } else if (i == 4) {
                 if (this.creditCards.isEmpty()) {
                     System.out.println("You don't have any credit cards. Please request one first.");

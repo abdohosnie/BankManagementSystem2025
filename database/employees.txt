@@ -1,3 +1,4 @@
 200000,Alice,Carter,alice,123,123,0,123 Main Street,Manager,Business School,2020,A+
 200001,Bob,Smith,bob,123,123,0,123 Main Street,Teller,Finance College,2018,B+
 200002,Charlie,Brown,Charlie,123,123,0,456 Main Street,Loan Officer,Economics School,2019,A-
+200003,Asmaa,placeholder,asmaa,123,123,0,123 Main street,Manager,Business School,2020,A
